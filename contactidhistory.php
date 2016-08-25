@@ -16,6 +16,20 @@
 
 require_once 'contactidhistory.civix.php';
 
+
+/**
+ * Whenever this extension is enabled, we'll make sure that our custom fields
+ *  are there.
+ */
+function contactidhistory_civicrm_enable() {
+  _contactidhistory_civix_civicrm_enable();
+
+  // make sure the fields are there
+  CRM_Contactidhistory_Configuration::instance()->createFieldsIfMissing();
+}
+
+
+
 /**
  * Implements hook_civicrm_config().
  *
@@ -52,15 +66,6 @@ function contactidhistory_civicrm_install() {
  */
 function contactidhistory_civicrm_uninstall() {
   _contactidhistory_civix_civicrm_uninstall();
-}
-
-/**
- * Implements hook_civicrm_enable().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
- */
-function contactidhistory_civicrm_enable() {
-  _contactidhistory_civix_civicrm_enable();
 }
 
 /**
