@@ -62,6 +62,13 @@ function contactidhistory_civicrm_enable() {
 
   // make sure the fields are there
   CRM_Contactidhistory_Configuration::instance()->createFieldsIfMissing();
+
+  // then see if we need to migrate old data
+  error_log("Starting internal contact ID migration...");
+  CRM_Contactidhistory_Migration::migrateInternal();
+  error_log("Starting external contact ID migration...");
+  CRM_Contactidhistory_Migration::migrateExternal();
+  error_log("Migration completed.");
 }
 
 
