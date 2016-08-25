@@ -16,6 +16,42 @@
 
 require_once 'contactidhistory.civix.php';
 
+/**
+ * implement this hook to make sure we capture all ID changes
+ */
+function contactidhistory_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
+  if ($op == 'edit' || $op == 'create' || $op == 'update') {
+    if ($objectName == 'Individual' || $objectName == 'Organisation' || $objectName == 'Household') {
+      if (!empty($objectRef->external_identifier)) {
+        $exists = CRM_Core_DAO::singleValueQuery(CRM_Contactidhistory_Configuration::getLookupSQL(), array(
+          1 => array($objectId, 'Integer'),
+          2 => array(CRM_Contactidhistory_Configuration::TYPE_EXTERNAL, 'String'),
+          3 => array($objectRef->external_identifier, 'String'),
+          ));
+        if (!$exists) {
+          CRM_Core_DAO::executeQuery(CRM_Contactidhistory_Configuration::getInsertSQL(), array(
+            1 => array($objectId, 'Integer'),
+            2 => array(CRM_Contactidhistory_Configuration::TYPE_EXTERNAL, 'String'),
+            3 => array($objectRef->external_identifier, 'String'),
+            4 => array(date('YmdHis'), 'String'),
+          ));
+        }
+      }
+
+      if ($op == 'create') {
+        // copy contact's CiviCRM ID once upon creation
+        CRM_Core_DAO::executeQuery(CRM_Contactidhistory_Configuration::getInsertSQL(), array(
+          1 => array($objectId, 'Integer'),
+          2 => array(CRM_Contactidhistory_Configuration::TYPE_INTERNAL, 'String'),
+          3 => array($objectId, 'String'),
+          4 => array(date('YmdHis'), 'String'),
+        ));
+
+      }
+    }
+  }
+}
+
 
 /**
  * Whenever this extension is enabled, we'll make sure that our custom fields
