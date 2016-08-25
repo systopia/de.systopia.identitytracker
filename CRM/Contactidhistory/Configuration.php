@@ -55,6 +55,14 @@ class CRM_Contactidhistory_Configuration {
   }
 
 
+
+  public static function getSearchSQL() {
+    $group_table  = self::GROUP_TABLE;
+    $type_column  = self::TYPE_FIELD_COLUMN;
+    $id_column    = self::ID_FIELD_COLUMN;
+    return "SELECT DISTINCT(`entity_id`) FROM `{$group_table}` WHERE `{$type_column}` = %1 AND `{$id_column}` = %2;";
+  }
+
   public static function getLookupSQL() {
     $group_table  = self::GROUP_TABLE;
     $type_column  = self::TYPE_FIELD_COLUMN;

@@ -64,11 +64,18 @@ function contactidhistory_civicrm_enable() {
   CRM_Contactidhistory_Configuration::instance()->createFieldsIfMissing();
 
   // then see if we need to migrate old data
-  error_log("Starting internal contact ID migration...");
+  error_log("de.systopia.contactidhistory: Migrating internal contact IDs...");
   CRM_Contactidhistory_Migration::migrateInternal();
-  error_log("Starting external contact ID migration...");
+  error_log("de.systopia.contactidhistory: Migrating external contact IDs...");
   CRM_Contactidhistory_Migration::migrateExternal();
-  error_log("Migration completed.");
+  error_log("de.systopia.contactidhistory: Migration completed.");
+}
+
+/**
+ * Set permission to the API calls
+ */
+function contactidhistory_civicrm_alterAPIPermissions($entity, $action, &$params, &$permissions) {
+  $permissions['contact']['findbyhistory'] = array('view all contacts');
 }
 
 
