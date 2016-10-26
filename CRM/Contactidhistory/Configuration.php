@@ -19,7 +19,7 @@
 class CRM_Contactidhistory_Configuration {
 
   const GROUP_NAME          = 'contact_id_history';
-  const GROUP_LABEL         = 'ID History';
+  const GROUP_LABEL         = 'Contact Identities';
   const GROUP_TABLE         = 'civicrm_value_contact_id_history';
   const TYPE_FIELD_NAME     = 'id_history_entry_type';
   const TYPE_FIELD_LABEL    = 'ID Type';
@@ -32,7 +32,7 @@ class CRM_Contactidhistory_Configuration {
   const DATE_FIELD_COLUMN   = 'used_since';
 
   const TYPE_GROUP_NAME     = 'contact_id_history_type';
-  const TYPE_GROUP_LABEL    = 'Contact ID History - entry types';
+  const TYPE_GROUP_LABEL    = 'Contact Identity Types';
   const TYPE_INTERNAL       = 'internal';
   const TYPE_INTERNAL_LABEL = 'CiviCRM ID';
   const TYPE_EXTERNAL       = 'external';
