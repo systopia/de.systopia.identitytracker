@@ -110,6 +110,11 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
     $configuration = CRM_Identitytracker_Configuration::instance();
     $configuration->setCustomFieldMapping($mapping);
 
+    // migrate all (TODO: only changes?)
+    foreach ($mapping as $custom_field_id => $identity_type) {
+      CRM_Identitytracker_Migration::migrateCustom($identity_type, $custom_field_id);
+    }
+
     parent::postProcess();
   }
 

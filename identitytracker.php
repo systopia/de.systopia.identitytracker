@@ -89,11 +89,11 @@ function identitytracker_civicrm_enable() {
   CRM_Identitytracker_Configuration::instance()->createFieldsIfMissing();
 
   // then see if we need to migrate old data
-  error_log("de.systopia.identitytracker: Migrating internal contact IDs...");
+  CRM_Core_Error::debug_log_message("de.systopia.identitytracker: Migrating internal contact IDs...");
   CRM_Identitytracker_Migration::migrateInternal();
-  error_log("de.systopia.identitytracker: Migrating external contact IDs...");
+  CRM_Core_Error::debug_log_message("de.systopia.identitytracker: Migrating external contact IDs...");
   CRM_Identitytracker_Migration::migrateExternal();
-  error_log("de.systopia.identitytracker: Migration completed.");
+  CRM_Core_Error::debug_log_message("de.systopia.identitytracker: Migration completed.");
 }
 
 /**
