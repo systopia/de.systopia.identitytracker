@@ -14,23 +14,28 @@
 +--------------------------------------------------------*/
 
 /**
- * Find ONE contact based on the contact history
+ * Find contacts based on the contact history
  */
-function civicrm_api3_contact_identifybyhistory($params) {
-  $result = civicrm_api3('Contact', 'findbyhistory', $params);
-  if (empty($result['values'])) {
-    throw new Exception("No contacts found.", 1);
-  } elseif (count($result['values']) == 1) {
-    return $result;
-  } else {
-    throw new Exception("More than one contact found.", 1);    
+function civicrm_api3_contact_findbyidentity($params) {
+  // TODO: check if fields are there?
+  
+  $query = CRM_Core_DAO::executeQuery(CRM_Identitytracker_Configuration::getSearchSQL(), array(
+    1 => array($params['identifier_type'], 'String'),
+    2 => array($params['identifier'], 'String'),
+  ));
+
+  $results = array();
+  while ($query->fetch()) {
+    $results[$query->entity_id] = array('id' => $query->entity_id);
   }
+
+  return civicrm_api3_create_success($results);
 }
 
 /**
  * API3 action specs
  */
-function _civicrm_api3_contact_identifybyhistory_spec(&$params) {
+function _civicrm_api3_contact_findbyidentity_spec(&$params) {
   $params['identifier']['api.required'] = 1;
   $params['identifier_type']['api.required'] = 1;
 }

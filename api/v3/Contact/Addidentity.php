@@ -1,6 +1,6 @@
 <?php
 /*-------------------------------------------------------+
-| Contact ID History                                     |
+| Contact ID Tracker                                     |
 | Copyright (C) 2016 SYSTOPIA                            |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
@@ -16,7 +16,7 @@
 /**
  * Find contacts based on the contact history
  */
-function civicrm_api3_contact_addcontactidhistoryentry($params) {
+function civicrm_api3_contact_addidentity($params) {
 
   // set used_since to now if not given
   if (empty($params['used_since'])) $params['used_since'] = date("YmdHis");
@@ -25,8 +25,8 @@ function civicrm_api3_contact_addcontactidhistoryentry($params) {
   // TODO
 
   // create id-entry
-  $query = CRM_Core_DAO::executeQuery(CRM_Contactidhistory_Configuration::getInsertSQL(), array(
-    1 => array($params['entity_id'], 'Integer'),
+  $query = CRM_Core_DAO::executeQuery(CRM_Identitytracker_Configuration::getInsertSQL(), array(
+    1 => array($params['contact_id'], 'Integer'),
     2 => array($params['identifier_type'], 'String'),
     3 => array($params['identifier'], 'String'),
     4 => array($params['used_since'], 'String'),
@@ -38,8 +38,8 @@ function civicrm_api3_contact_addcontactidhistoryentry($params) {
 /**
  * API3 action specs
  */
-function _civicrm_api3_contact_addcontactidhistoryentry_spec(&$params) {
-  $params['entity_id']['api.required'] = 1;
+function _civicrm_api3_contact_addidentity_spec(&$params) {
+  $params['contact_id']['api.required'] = 1;
   $params['identifier']['api.required'] = 1;
   $params['identifier_type']['api.required'] = 1;
   $params['used_since']['api.required'] = 0;
