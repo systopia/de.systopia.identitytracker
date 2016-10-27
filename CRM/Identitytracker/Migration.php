@@ -1,6 +1,6 @@
 <?php
 /*-------------------------------------------------------+
-| Contact ID History                                     |
+| Contact ID Tracker                                     |
 | Copyright (C) 2016 SYSTOPIA                            |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
@@ -16,22 +16,22 @@
 /*
  * This class can migrate existing contacts's IDs into the newly created tables
  */
-class CRM_Contactidhistory_Migration {
+class CRM_Identitytracker_Migration {
 
   public static function migrateInternal() {
-    self::migrate(CRM_Contactidhistory_Configuration::TYPE_INTERNAL, 'id');
+    self::migrate(CRM_Identitytracker_Configuration::TYPE_INTERNAL, 'id');
   }
 
   public static function migrateExternal() {
-    self::migrate(CRM_Contactidhistory_Configuration::TYPE_EXTERNAL, 'external_identifier');
+    self::migrate(CRM_Identitytracker_Configuration::TYPE_EXTERNAL, 'external_identifier');
   }
 
   protected static function migrate($type, $contact_field) {
     $install_date = CRM_Core_DAO::singleValueQuery("SELECT MIN(`created_date`) FROM `civicrm_contact`;");
-    $group_table  = CRM_Contactidhistory_Configuration::GROUP_TABLE;
-    $type_column  = CRM_Contactidhistory_Configuration::TYPE_FIELD_COLUMN;
-    $id_column    = CRM_Contactidhistory_Configuration::ID_FIELD_COLUMN;
-    $date_column  = CRM_Contactidhistory_Configuration::DATE_FIELD_COLUMN;
+    $group_table  = CRM_Identitytracker_Configuration::GROUP_TABLE;
+    $type_column  = CRM_Identitytracker_Configuration::TYPE_FIELD_COLUMN;
+    $id_column    = CRM_Identitytracker_Configuration::ID_FIELD_COLUMN;
+    $date_column  = CRM_Identitytracker_Configuration::DATE_FIELD_COLUMN;
 
     CRM_Core_DAO::executeQuery("
       INSERT INTO `$group_table` (`entity_id`, `{$type_column}`, `{$id_column}`, `{$date_column}`)

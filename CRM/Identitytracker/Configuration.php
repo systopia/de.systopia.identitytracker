@@ -1,6 +1,6 @@
 <?php
 /*-------------------------------------------------------+
-| Contact ID History                                     |
+| Contact ID Tracker                                     |
 | Copyright (C) 2016 SYSTOPIA                            |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
@@ -16,7 +16,7 @@
 /*
  * Configuration wrapper
  */
-class CRM_Contactidhistory_Configuration {
+class CRM_Identitytracker_Configuration {
 
   const GROUP_NAME          = 'contact_id_history';
   const GROUP_LABEL         = 'Contact Identities';
@@ -31,13 +31,14 @@ class CRM_Contactidhistory_Configuration {
   const DATE_FIELD_LABEL    = 'Used since';
   const DATE_FIELD_COLUMN   = 'used_since';
 
+  // built-in identities
   const TYPE_GROUP_NAME     = 'contact_id_history_type';
   const TYPE_GROUP_LABEL    = 'Contact Identity Types';
   const TYPE_INTERNAL       = 'internal';
   const TYPE_INTERNAL_LABEL = 'CiviCRM ID';
   const TYPE_EXTERNAL       = 'external';
   const TYPE_EXTERNAL_LABEL = 'External Identifier';
-  // const GROUP_LABEL     = ts('Contact ID History', array('domain' => 'de.systopia.contactidhistory'));
+  // const GROUP_LABEL     = ts('Contact ID History', array('domain' => 'de.systopia.identitytracker'));
 
 
   protected $contact_id_history_group  = NULL;
@@ -49,7 +50,7 @@ class CRM_Contactidhistory_Configuration {
 
   public static function instance() {
     if (self::$singleton === NULL) {
-      self::$singleton = new CRM_Contactidhistory_Configuration();
+      self::$singleton = new CRM_Identitytracker_Configuration();
     }
     return self::$singleton;
   }
@@ -81,8 +82,8 @@ class CRM_Contactidhistory_Configuration {
   /**
    * Get the ID of the specified custom field
    */
-  public function getContactIdHistoryFieldID($field_name) {
-    $fields = $this->getContactIdHistoryFields();
+  public function getIdentitytrackerFieldID($field_name) {
+    $fields = $this->getIdentitytrackerFields();
     if (empty($fields[$field_name]['id'])) {
       return NULL;
     } else {
@@ -94,7 +95,7 @@ class CRM_Contactidhistory_Configuration {
   /**
    * get the custom group entity used for the contact history
    */
-  public function getContactIdHistoryGroup() {
+  public function getIdentitytrackerGroup() {
     if ($this->contact_id_history_group === NULL) {
       try {
         $this->contact_id_history_group = civicrm_api3('CustomGroup', 'getsingle', array('name' => self::GROUP_NAME));
@@ -137,9 +138,9 @@ class CRM_Contactidhistory_Configuration {
   /**
    * get the list of the custom fields used
    */
-  protected function getContactIdHistoryFields() {
+  protected function getIdentitytrackerFields() {
     if ($this->contact_id_history_fields === NULL) {
-      $group = $this->getContactIdHistoryGroup();
+      $group = $this->getIdentitytrackerGroup();
       if ($group) {
         $reply = civicrm_api3('CustomField', 'get', array(
           'custom_group_id' => $group['id'],
@@ -167,7 +168,7 @@ class CRM_Contactidhistory_Configuration {
     $this->createOptionGroupIfMissing();
 
     // NOW: create the group if missing
-    $group = $this->getContactIdHistoryGroup();
+    $group = $this->getIdentitytrackerGroup();
     if (empty($group)) {
       CRM_Core_DAO::executeQuery("DROP TABLE IF EXISTS `{self::GROUP_TABLE}`;");
       civicrm_api3('CustomGroup', 'create', array(
@@ -187,13 +188,13 @@ class CRM_Contactidhistory_Configuration {
         'collapse_adv_display' => 1,
         ));
       $this->contact_id_history_group = NULL;
-      $group = $this->getContactIdHistoryGroup();
+      $group = $this->getIdentitytrackerGroup();
     }
 
     // then create type field if missing
-    $type_field_id = $this->getContactIdHistoryFieldID(self::TYPE_FIELD_NAME);
-    $id_field_id   = $this->getContactIdHistoryFieldID(self::ID_FIELD_NAME);
-    $date_field_id = $this->getContactIdHistoryFieldID(self::DATE_FIELD_NAME);
+    $type_field_id = $this->getIdentitytrackerFieldID(self::TYPE_FIELD_NAME);
+    $id_field_id   = $this->getIdentitytrackerFieldID(self::ID_FIELD_NAME);
+    $date_field_id = $this->getIdentitytrackerFieldID(self::DATE_FIELD_NAME);
 
     if (empty($type_field_id)) {
       civicrm_api3('CustomField', 'create', array(

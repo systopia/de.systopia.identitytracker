@@ -1,6 +1,6 @@
 <?php
 /*-------------------------------------------------------+
-| Contact ID History                                     |
+| Contact ID Tracker                                     |
 | Copyright (C) 2016 SYSTOPIA                            |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
@@ -14,24 +14,24 @@
 +--------------------------------------------------------*/
 
 
-require_once 'contactidhistory.civix.php';
+require_once 'identitytracker.civix.php';
 
 /**
  * implement this hook to make sure we capture all ID changes
  */
-function contactidhistory_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
+function identitytracker_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
   if ($op == 'edit' || $op == 'create' || $op == 'update') {
     if ($objectName == 'Individual' || $objectName == 'Organisation' || $objectName == 'Household') {
       if (!empty($objectRef->external_identifier)) {
-        $exists = CRM_Core_DAO::singleValueQuery(CRM_Contactidhistory_Configuration::getLookupSQL(), array(
+        $exists = CRM_Core_DAO::singleValueQuery(CRM_Identitytracker_Configuration::getLookupSQL(), array(
           1 => array($objectId, 'Integer'),
-          2 => array(CRM_Contactidhistory_Configuration::TYPE_EXTERNAL, 'String'),
+          2 => array(CRM_Identitytracker_Configuration::TYPE_EXTERNAL, 'String'),
           3 => array($objectRef->external_identifier, 'String'),
           ));
         if (!$exists) {
-          CRM_Core_DAO::executeQuery(CRM_Contactidhistory_Configuration::getInsertSQL(), array(
+          CRM_Core_DAO::executeQuery(CRM_Identitytracker_Configuration::getInsertSQL(), array(
             1 => array($objectId, 'Integer'),
-            2 => array(CRM_Contactidhistory_Configuration::TYPE_EXTERNAL, 'String'),
+            2 => array(CRM_Identitytracker_Configuration::TYPE_EXTERNAL, 'String'),
             3 => array($objectRef->external_identifier, 'String'),
             4 => array(date('YmdHis'), 'String'),
           ));
@@ -40,9 +40,9 @@ function contactidhistory_civicrm_post( $op, $objectName, $objectId, &$objectRef
 
       if ($op == 'create') {
         // copy contact's CiviCRM ID once upon creation
-        CRM_Core_DAO::executeQuery(CRM_Contactidhistory_Configuration::getInsertSQL(), array(
+        CRM_Core_DAO::executeQuery(CRM_Identitytracker_Configuration::getInsertSQL(), array(
           1 => array($objectId, 'Integer'),
-          2 => array(CRM_Contactidhistory_Configuration::TYPE_INTERNAL, 'String'),
+          2 => array(CRM_Identitytracker_Configuration::TYPE_INTERNAL, 'String'),
           3 => array($objectId, 'String'),
           4 => array(date('YmdHis'), 'String'),
         ));
@@ -57,24 +57,24 @@ function contactidhistory_civicrm_post( $op, $objectName, $objectId, &$objectRef
  * Whenever this extension is enabled, we'll make sure that our custom fields
  *  are there.
  */
-function contactidhistory_civicrm_enable() {
-  _contactidhistory_civix_civicrm_enable();
+function identitytracker_civicrm_enable() {
+  _identitytracker_civix_civicrm_enable();
 
   // make sure the fields are there
-  CRM_Contactidhistory_Configuration::instance()->createFieldsIfMissing();
+  CRM_Identitytracker_Configuration::instance()->createFieldsIfMissing();
 
   // then see if we need to migrate old data
-  error_log("de.systopia.contactidhistory: Migrating internal contact IDs...");
-  CRM_Contactidhistory_Migration::migrateInternal();
-  error_log("de.systopia.contactidhistory: Migrating external contact IDs...");
-  CRM_Contactidhistory_Migration::migrateExternal();
-  error_log("de.systopia.contactidhistory: Migration completed.");
+  error_log("de.systopia.identitytracker: Migrating internal contact IDs...");
+  CRM_Identitytracker_Migration::migrateInternal();
+  error_log("de.systopia.identitytracker: Migrating external contact IDs...");
+  CRM_Identitytracker_Migration::migrateExternal();
+  error_log("de.systopia.identitytracker: Migration completed.");
 }
 
 /**
  * Set permission to the API calls
  */
-function contactidhistory_civicrm_alterAPIPermissions($entity, $action, &$params, &$permissions) {
+function identitytracker_civicrm_alterAPIPermissions($entity, $action, &$params, &$permissions) {
   $permissions['contact']['findbyhistory'] = array('view all contacts');
 }
 
@@ -85,8 +85,8 @@ function contactidhistory_civicrm_alterAPIPermissions($entity, $action, &$params
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
  */
-function contactidhistory_civicrm_config(&$config) {
-  _contactidhistory_civix_civicrm_config($config);
+function identitytracker_civicrm_config(&$config) {
+  _identitytracker_civix_civicrm_config($config);
 }
 
 /**
@@ -96,8 +96,8 @@ function contactidhistory_civicrm_config(&$config) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_xmlMenu
  */
-function contactidhistory_civicrm_xmlMenu(&$files) {
-  _contactidhistory_civix_civicrm_xmlMenu($files);
+function identitytracker_civicrm_xmlMenu(&$files) {
+  _identitytracker_civix_civicrm_xmlMenu($files);
 }
 
 /**
@@ -105,8 +105,8 @@ function contactidhistory_civicrm_xmlMenu(&$files) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
-function contactidhistory_civicrm_install() {
-  _contactidhistory_civix_civicrm_install();
+function identitytracker_civicrm_install() {
+  _identitytracker_civix_civicrm_install();
 }
 
 /**
@@ -114,8 +114,8 @@ function contactidhistory_civicrm_install() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
  */
-function contactidhistory_civicrm_uninstall() {
-  _contactidhistory_civix_civicrm_uninstall();
+function identitytracker_civicrm_uninstall() {
+  _identitytracker_civix_civicrm_uninstall();
 }
 
 /**
@@ -123,8 +123,8 @@ function contactidhistory_civicrm_uninstall() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
  */
-function contactidhistory_civicrm_disable() {
-  _contactidhistory_civix_civicrm_disable();
+function identitytracker_civicrm_disable() {
+  _identitytracker_civix_civicrm_disable();
 }
 
 /**
@@ -139,8 +139,8 @@ function contactidhistory_civicrm_disable() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_upgrade
  */
-function contactidhistory_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
-  return _contactidhistory_civix_civicrm_upgrade($op, $queue);
+function identitytracker_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
+  return _identitytracker_civix_civicrm_upgrade($op, $queue);
 }
 
 /**
@@ -151,8 +151,8 @@ function contactidhistory_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_managed
  */
-function contactidhistory_civicrm_managed(&$entities) {
-  _contactidhistory_civix_civicrm_managed($entities);
+function identitytracker_civicrm_managed(&$entities) {
+  _identitytracker_civix_civicrm_managed($entities);
 }
 
 /**
@@ -166,8 +166,8 @@ function contactidhistory_civicrm_managed(&$entities) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
  */
-function contactidhistory_civicrm_caseTypes(&$caseTypes) {
-  _contactidhistory_civix_civicrm_caseTypes($caseTypes);
+function identitytracker_civicrm_caseTypes(&$caseTypes) {
+  _identitytracker_civix_civicrm_caseTypes($caseTypes);
 }
 
 /**
@@ -180,8 +180,8 @@ function contactidhistory_civicrm_caseTypes(&$caseTypes) {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
  */
-function contactidhistory_civicrm_angularModules(&$angularModules) {
-_contactidhistory_civix_civicrm_angularModules($angularModules);
+function identitytracker_civicrm_angularModules(&$angularModules) {
+_identitytracker_civix_civicrm_angularModules($angularModules);
 }
 
 /**
@@ -189,6 +189,6 @@ _contactidhistory_civix_civicrm_angularModules($angularModules);
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_alterSettingsFolders
  */
-function contactidhistory_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
-  _contactidhistory_civix_civicrm_alterSettingsFolders($metaDataFolders);
+function identitytracker_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
+  _identitytracker_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }

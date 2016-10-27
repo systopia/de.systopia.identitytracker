@@ -1,6 +1,6 @@
 <?php
 /*-------------------------------------------------------+
-| Contact ID History                                     |
+| Contact ID Tracker                                     |
 | Copyright (C) 2016 SYSTOPIA                            |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+

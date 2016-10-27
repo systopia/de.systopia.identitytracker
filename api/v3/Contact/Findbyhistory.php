@@ -1,6 +1,6 @@
 <?php
 /*-------------------------------------------------------+
-| Contact ID History                                     |
+| Contact ID Tracker                                     |
 | Copyright (C) 2016 SYSTOPIA                            |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
@@ -19,7 +19,7 @@
 function civicrm_api3_contact_findbyhistory($params) {
   // TODO: check if fields are there?
   
-  $query = CRM_Core_DAO::executeQuery(CRM_Contactidhistory_Configuration::getSearchSQL(), array(
+  $query = CRM_Core_DAO::executeQuery(CRM_Identitytracker_Configuration::getSearchSQL(), array(
     1 => array($params['identifier_type'], 'String'),
     2 => array($params['identifier'], 'String'),
   ));

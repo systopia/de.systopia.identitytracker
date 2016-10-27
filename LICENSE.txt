@@ -1,4 +1,4 @@
-Package: de.systopia.contactidhistory
+Package: de.systopia.identitytracker
 Copyright (C) 2016, systopia <endres@systopia.de>
 Licensed under the GNU Affero Public License 3.0 (below).
 
