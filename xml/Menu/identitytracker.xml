@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <title>Identity Tracker Settings</title>
+    <adminGroup>System Settings</adminGroup>
+    <desc>Additional identity fields for the Identity Tracker extension</desc>
+    <path>civicrm/admin/setting/idtracker</path>
+    <page_callback>CRM_Identitytracker_Form_Settings</page_callback>
+    <access_arguments>administer CiviCRM</access_arguments>
+    <icon>admin/small/custm_data.png</icon>
+  </item>
+</menu>

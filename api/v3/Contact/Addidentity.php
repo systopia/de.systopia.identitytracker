@@ -21,8 +21,7 @@ function civicrm_api3_contact_addidentity($params) {
   // set used_since to now if not given
   if (empty($params['used_since'])) $params['used_since'] = date("YmdHis");
 
-  // check if identifier_type exists
-  // TODO
+  // TODO: check if identifier_type exists?
 
   // create id-entry
   $query = CRM_Core_DAO::executeQuery(CRM_Identitytracker_Configuration::getInsertSQL(), array(

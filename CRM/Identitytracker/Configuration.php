@@ -76,7 +76,16 @@ class CRM_Identitytracker_Configuration {
     $type_column  = self::TYPE_FIELD_COLUMN;
     $id_column    = self::ID_FIELD_COLUMN;
     $date_column  = self::DATE_FIELD_COLUMN;
-    return "INSERT INTO `$group_table` (`entity_id`, `{$type_column}`, `{$id_column}`, `{$date_column}`) VALUES (%1, %2, %3, %4);";
+    // return "INSERT INTO `$group_table` (`entity_id`, `{$type_column}`, `{$id_column}`, `{$date_column}`) VALUES (%1, %2, %3, %4);";
+    
+    // This statement automatically checks for existing entries.
+    return "INSERT INTO `$group_table` (`entity_id`, `{$type_column}`, `{$id_column}`, `{$date_column}`) 
+            SELECT * FROM (SELECT %1 AS entity_id, %2 AS type, %3 AS indentifier, %4 AS used_since) AS tmp
+            WHERE NOT EXISTS (
+              SELECT `id` FROM `$group_table` 
+              WHERE `entity_id` = %1 AND `{$type_column}` = %2 AND `{$id_column}` = %3
+              LIMIT 1
+            )";
   }
 
   /**
@@ -138,7 +147,7 @@ class CRM_Identitytracker_Configuration {
   /**
    * get the list of the custom fields used
    */
-  protected function getIdentitytrackerFields() {
+  public function getIdentitytrackerFields() {
     if ($this->contact_id_history_fields === NULL) {
       $group = $this->getIdentitytrackerGroup();
       if ($group) {
@@ -157,6 +166,26 @@ class CRM_Identitytracker_Configuration {
   }
 
 
+  /**
+   * get the configured mapping
+   *   array(<custom_field_id> => <option_value_id>)
+   * of custom fields that should be treated as contact identity
+   *
+   * @return array
+   */
+  public function getCustomFieldMapping() {
+    return civicrm_api3('Setting', 'getvalue', array('name' => 'identitytracker_mapping'));
+  }
+
+  /**
+   * set the configured mapping, set ::getCustomFieldMapping
+   *
+   * @param $mapping array
+   */
+  public function setCustomFieldMapping($mapping) {
+    civicrm_api3('Setting', 'create', array('identitytracker_mapping' => $mapping));
+  }
+  
 
 
   /*****************************************

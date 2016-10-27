@@ -52,6 +52,31 @@ function identitytracker_civicrm_post( $op, $objectName, $objectId, &$objectRef 
   }
 }
 
+/**
+ * if custom fields that are identities are written, 
+ *  make sure we copy the value into the identity table
+ */
+function identitytracker_civicrm_custom($op, $groupID, $entityID, &$params) {
+  if ( $op != 'create' && $op != 'edit' ) {
+    return;
+  }
+
+  $configuration = CRM_Identitytracker_Configuration::instance();
+  $mapping = $configuration->getCustomFieldMapping();
+  foreach ($params as $write) {
+    if (!empty($write['custom_field_id']) && isset($mapping[$write['custom_field_id']])) {
+      // HIT! This is an identity field!
+      $identity_type = $mapping[$write['custom_field_id']];
+      if (!empty($write['value'])) {
+        civicrm_api3('Contact', 'addidentity', array(
+          'contact_id' => $entityID,
+          'identifier_type' => $identity_type,
+          'identifier' => $write['value'],
+          ));
+      }
+    }
+  }
+}
 
 /**
  * Whenever this extension is enabled, we'll make sure that our custom fields
