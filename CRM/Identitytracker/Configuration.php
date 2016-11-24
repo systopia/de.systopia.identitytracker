@@ -61,7 +61,12 @@ class CRM_Identitytracker_Configuration {
     $group_table  = self::GROUP_TABLE;
     $type_column  = self::TYPE_FIELD_COLUMN;
     $id_column    = self::ID_FIELD_COLUMN;
-    return "SELECT DISTINCT(`entity_id`) FROM `{$group_table}` WHERE `{$type_column}` = %1 AND `{$id_column}` = %2;";
+    return "SELECT DISTINCT(`entity_id`)
+            FROM `{$group_table}`
+            LEFT JOIN civicrm_contact ON civicrm_contact.id = entity_id
+            WHERE `{$type_column}` = %1 
+              AND `{$id_column}` = %2
+              AND civicrm_contact.is_deleted = 0;";
   }
 
   public static function getLookupSQL() {
