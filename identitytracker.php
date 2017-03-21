@@ -22,7 +22,7 @@ require_once 'identitytracker.civix.php';
 function identitytracker_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
   if ($op == 'edit' || $op == 'create' || $op == 'update') {
     if ($objectName == 'Individual' || $objectName == 'Organization' || $objectName == 'Household') {
-      if (!empty($objectRef->external_identifier)) {
+      if (!empty($objectRef->external_identifier) && ($objectRef->external_identifier != 'null')) {
         $exists = CRM_Core_DAO::singleValueQuery(CRM_Identitytracker_Configuration::getLookupSQL(), array(
           1 => array($objectId, 'Integer'),
           2 => array(CRM_Identitytracker_Configuration::TYPE_EXTERNAL, 'String'),
