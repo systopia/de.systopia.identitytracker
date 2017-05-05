@@ -40,12 +40,12 @@ class CRM_Identitytracker_Migration {
       INSERT INTO `$group_table` (`entity_id`, `{$type_column}`, `{$id_column}`, `{$date_column}`)
         (SELECT  id AS ch_entity_id,
                  %1 AS ch_type,
-                 `{$contact_field}` AS ch_indentifier,
+                 CAST(`{$contact_field}` AS CHAR) AS ch_indentifier,
                  COALESCE (DATE(`created_date`), DATE(%2)) AS ch_date
           FROM   `civicrm_contact`
           WHERE  `{$contact_field}` IS NOT NULL
-            AND  `{$contact_field}` != ''
-            AND  NOT EXISTS ( SELECT `{$group_table}`.`id` FROM `{$group_table}` 
+            AND  CAST(`{$contact_field}` AS CHAR) != ''
+            AND  NOT EXISTS ( SELECT `{$group_table}`.`id` FROM `{$group_table}`
                                WHERE `entity_id` = `civicrm_contact`.`id`
                                  AND `{$type_column}` = %1
                                  AND `{$id_column}` = `civicrm_contact`.`{$contact_field}`)
