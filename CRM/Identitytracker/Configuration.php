@@ -179,7 +179,9 @@ class CRM_Identitytracker_Configuration {
    * @return array
    */
   public function getCustomFieldMapping() {
-    return civicrm_api3('Setting', 'getvalue', array('name' => 'identitytracker_mapping'));
+    return civicrm_api3('Setting', 'getvalue', array(
+      'name'  => 'identitytracker_mapping',
+      'group' => 'de.systopia.identitytracker'));
   }
 
   /**
