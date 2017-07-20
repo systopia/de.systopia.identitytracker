@@ -22,7 +22,7 @@ require_once 'CRM/Core/Form.php';
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC43/QuickForm+Reference
  */
 class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
-  
+
   const CUSTOM_FIELD_COUNT = 5;
 
 
@@ -42,7 +42,7 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
 
     // add elements
     $config_rows = array();
-    for ($i=1; $i <= self::CUSTOM_FIELD_COUNT; $i++) { 
+    for ($i=1; $i <= self::CUSTOM_FIELD_COUNT; $i++) {
       $this->addElement('select',
                         "custom_field_$i",
                         ts('Custom Field', array('domain' => 'de.systopia.identitytracker')),
@@ -83,11 +83,14 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
 
     $configuration = CRM_Identitytracker_Configuration::instance();
     $mapping = $configuration->getCustomFieldMapping();
-    $i = 0;
-    foreach ($mapping as $custom_field => $identity_type) {
-      $i++;
-      $defaults["custom_field_$i"]  = $custom_field;
-      $defaults["identity_type_$i"] = $identity_type;
+
+    if ($mapping) {
+      $i = 0;
+      foreach ($mapping as $custom_field => $identity_type) {
+        $i++;
+        $defaults["custom_field_$i"]  = $custom_field;
+        $defaults["identity_type_$i"] = $identity_type;
+      }
     }
 
     return $defaults;
@@ -99,7 +102,7 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
 
     // store
     $mapping = array();
-    for ($i=0; $i <= self::CUSTOM_FIELD_COUNT; $i++) { 
+    for ($i=0; $i <= self::CUSTOM_FIELD_COUNT; $i++) {
       $custom_field  = CRM_Utils_Array::value("custom_field_$i", $values, NULL);
       $identity_type = CRM_Utils_Array::value("identity_type_$i", $values, NULL);
       if (!empty($custom_field) && !empty($identity_type)) {
@@ -125,7 +128,7 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
   protected function getIdentityTypes() {
     $identity_types_query = civicrm_api3('OptionValue', 'get', array(
       'option_group_id' => 'contact_id_history_type',
-      'return'          => 'value,label', 
+      'return'          => 'value,label',
       'options.limit'   => 0));
     foreach ($identity_types_query['values'] as $identity_type) {
       $identity_types[$identity_type['value']] = $identity_type['label'];
@@ -140,7 +143,7 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
     // FIRST: find all contact types:
     $contact_types = array('Contact');
     $contact_types_query = civicrm_api3('ContactType', 'get', array(
-      'return'        => 'name', 
+      'return'        => 'name',
       'options.limit' => 0));
     foreach ($contact_types_query['values'] as $contact_type) {
       $contact_types[] = $contact_type['name'];

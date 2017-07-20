@@ -64,7 +64,7 @@ class CRM_Identitytracker_Configuration {
     return "SELECT DISTINCT(`entity_id`)
             FROM `{$group_table}`
             LEFT JOIN civicrm_contact ON civicrm_contact.id = entity_id
-            WHERE `{$type_column}` = %1 
+            WHERE `{$type_column}` = %1
               AND `{$id_column}` = %2
               AND civicrm_contact.is_deleted = 0;";
   }
@@ -82,12 +82,12 @@ class CRM_Identitytracker_Configuration {
     $id_column    = self::ID_FIELD_COLUMN;
     $date_column  = self::DATE_FIELD_COLUMN;
     // return "INSERT INTO `$group_table` (`entity_id`, `{$type_column}`, `{$id_column}`, `{$date_column}`) VALUES (%1, %2, %3, %4);";
-    
+
     // This statement automatically checks for existing entries.
-    return "INSERT INTO `$group_table` (`entity_id`, `{$type_column}`, `{$id_column}`, `{$date_column}`) 
+    return "INSERT INTO `$group_table` (`entity_id`, `{$type_column}`, `{$id_column}`, `{$date_column}`)
             SELECT * FROM (SELECT %1 AS entity_id, %2 AS type, %3 AS indentifier, %4 AS used_since) AS tmp
             WHERE NOT EXISTS (
-              SELECT `id` FROM `$group_table` 
+              SELECT `id` FROM `$group_table`
               WHERE `entity_id` = %1 AND `{$type_column}` = %2 AND `{$id_column}` = %3
               LIMIT 1
             )";
@@ -113,7 +113,7 @@ class CRM_Identitytracker_Configuration {
     if ($this->contact_id_history_group === NULL) {
       try {
         $this->contact_id_history_group = civicrm_api3('CustomGroup', 'getsingle', array('name' => self::GROUP_NAME));
-      } 
+      }
       catch (Exception $e) {
         // that should simply mean that there is no such group
         $this->contact_id_history_group = array();
@@ -179,9 +179,15 @@ class CRM_Identitytracker_Configuration {
    * @return array
    */
   public function getCustomFieldMapping() {
-    return civicrm_api3('Setting', 'getvalue', array(
-      'name'  => 'identitytracker_mapping',
-      'group' => 'de.systopia.identitytracker'));
+    $setting_query = civicrm_api3('Setting', 'get', array(
+      'return'  => 'identitytracker_mapping'));
+    if (isset($setting_query['values'])) {
+      $setting = reset($setting_query['values']);
+      if (isset($setting['identitytracker_mapping'])) {
+        return $setting['identitytracker_mapping'];
+      }
+    }
+    return array();
   }
 
   /**
@@ -192,7 +198,7 @@ class CRM_Identitytracker_Configuration {
   public function setCustomFieldMapping($mapping) {
     civicrm_api3('Setting', 'create', array('identitytracker_mapping' => $mapping));
   }
-  
+
 
 
   /*****************************************

@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
-| muslimehelfen e.V. Kurban Extension                    |
-| Copyright (C) 2015 SYSTOPIA                            |
+| Contact ID Tracker                                     |
+| Copyright (C) 2016 SYSTOPIA                            |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
