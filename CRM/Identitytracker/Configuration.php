@@ -179,15 +179,12 @@ class CRM_Identitytracker_Configuration {
    * @return array
    */
   public function getCustomFieldMapping() {
-    $setting_query = civicrm_api3('Setting', 'get', array(
-      'return'  => 'identitytracker_mapping'));
-    if (isset($setting_query['values'])) {
-      $setting = reset($setting_query['values']);
-      if (isset($setting['identitytracker_mapping'])) {
-        return $setting['identitytracker_mapping'];
-      }
+    $mapping = CRM_Core_BAO_Setting::getItem('de.systopia.identitytracker', 'identitytracker_mapping');
+    if (is_array($mapping)) {
+      return $mapping;
+    } else {
+      return array();
     }
-    return array();
   }
 
   /**
@@ -196,7 +193,7 @@ class CRM_Identitytracker_Configuration {
    * @param $mapping array
    */
   public function setCustomFieldMapping($mapping) {
-    civicrm_api3('Setting', 'create', array('identitytracker_mapping' => $mapping));
+    CRM_Core_BAO_Setting::setItem($mapping, 'de.systopia.identitytracker', 'identitytracker_mapping');
   }
 
 
