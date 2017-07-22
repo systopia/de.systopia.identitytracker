@@ -129,7 +129,7 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
     $identity_types_query = civicrm_api3('OptionValue', 'get', array(
       'option_group_id' => 'contact_id_history_type',
       'return'          => 'value,label',
-      'options.limit'   => 0));
+      'option.limit'    => 0));
     foreach ($identity_types_query['values'] as $identity_type) {
       $identity_types[$identity_type['value']] = $identity_type['label'];
     }
@@ -144,7 +144,7 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
     $contact_types = array('Contact');
     $contact_types_query = civicrm_api3('ContactType', 'get', array(
       'return'        => 'name',
-      'options.limit' => 0));
+      'option.limit'  => 0));
     foreach ($contact_types_query['values'] as $contact_type) {
       $contact_types[] = $contact_type['name'];
     }
@@ -153,7 +153,7 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
     $custom_groups_query = civicrm_api3('CustomGroup', 'get', array(
       'return'        => 'id',
       'extends'       => array('IN' => $contact_types),
-      'options.limit' => 0));
+      'option.limit'  => 0));
     foreach ($custom_groups_query['values'] as $custom_group) {
       $custom_groups[] = $custom_group['id'];
     }
@@ -162,7 +162,7 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
     $custom_fields_query = civicrm_api3('CustomField', 'get', array(
       'return'          => 'id,label',
       'custom_group_id' => array('IN' => $custom_groups),
-      'options.limit'   => 0));
+      'option.limit'    => 0));
     foreach ($custom_fields_query['values'] as $custom_field) {
       $custom_fields[$custom_field['id']] = $custom_field['label'];
     }
