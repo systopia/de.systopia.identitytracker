@@ -320,4 +320,28 @@ class CRM_Identitytracker_Configuration {
         'is_active'            => '1'));
     }
   }
+
+
+  /**
+   * Register the IdentityAnalyser if CiviBanking is present
+   */
+  public static function registerIdentityAnalyser() {
+    $option_groups = civicrm_api3('OptionGroup', 'get', ['name' => 'civicrm_banking.plugin_types']);
+    if (!empty($option_groups['id'])) {
+      // the option group exists, CiviBanking seems to be there
+      $entries = civicrm_api3('OptionValue', 'get', [
+          'name'            => 'analyser_identity',
+          'option_group_id' => $option_groups['id']]);
+      if ($entries['count'] == 0) {
+        civicrm_api3('OptionValue', 'create', [
+            'name'            => 'analyser_identity',
+            'label'           => 'Identity Analyser',
+            'value'           => 'CRM_Banking_PluginImpl_Matcher_IdentityAnalyser',
+            'is_default'      => 0,
+            'description'     => 'Uses the ID Tracker Data to look up Contact IDs',
+            'option_group_id' => $option_groups['id']
+        ]);
+      }
+    }
+  }
 }
