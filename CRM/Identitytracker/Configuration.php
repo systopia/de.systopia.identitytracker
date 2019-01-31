@@ -320,4 +320,26 @@ class CRM_Identitytracker_Configuration {
         'is_active'            => '1'));
     }
   }
+
+
+  /**
+   * Checks it an $option_value already exists, and if not create it
+   * @param $option_type
+   *
+   * @throws \CiviCRM_API3_Exception
+   */
+    public static function add_identity_type($option_type, $option_label) {
+    $result = civicrm_api3('OptionValue', 'get', [
+      'sequential' => 1,
+      'option_group_id' => "contact_id_history_type",
+      'value' => $option_type,
+    ]);
+    if ($result['count'] == '0') {
+      $create_result = civicrm_api3('OptionValue', 'create', [
+        'option_group_id' => "contact_id_history_type",
+        "value"           => $option_type,
+        "label"           => $option_label,
+      ]);
+    }
+  }
 }
