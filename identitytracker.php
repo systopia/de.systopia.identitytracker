@@ -1,7 +1,7 @@
 <?php
 /*-------------------------------------------------------+
 | Contact ID Tracker                                     |
-| Copyright (C) 2016 SYSTOPIA                            |
+| Copyright (C) 2019 SYSTOPIA                            |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
@@ -84,6 +84,9 @@ function identitytracker_civicrm_custom($op, $groupID, $entityID, &$params) {
  */
 function identitytracker_civicrm_enable() {
   _identitytracker_civix_civicrm_enable();
+
+  // register the IndentiyAnalyser if CiviBanking is installed
+  CRM_Identitytracker_Configuration::registerIdentityAnalyser();
 
   // make sure the fields are there
   CRM_Identitytracker_Configuration::instance()->createFieldsIfMissing();
