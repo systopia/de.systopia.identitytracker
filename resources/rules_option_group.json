@@ -1,0 +1,28 @@
+{
+  "_lookup": ["name"],
+  "_translate": ["title"],
+  "name": "xcm_matching_rules",
+  "title": "XCM Matching Rules",
+  "_values": [
+    {
+      "_lookup": ["name"],
+      "_translate": ["label"],
+      "name": "CRM_Xcm_Matcher_IdTrackerInternalMatcher",
+      "value": "CRM_Xcm_Matcher_IdTrackerInternalMatcher",
+      "label": "Identity Tracker: CiviCRM ID (internal)",
+      "filter": "0",
+      "is_reserved": "1",
+      "is_active": "1"
+    },
+    {
+      "_lookup": ["name"],
+      "_translate": ["label"],
+      "name": "CRM_Xcm_Matcher_IdTrackerExternalMatcher",
+      "value": "CRM_Xcm_Matcher_IdTrackerExternalMatcher",
+      "label": "Identity Tracker: External Identifier",
+      "filter": "0",
+      "is_reserved": "1",
+      "is_active": "1"
+    }
+  ]
+}
