@@ -106,6 +106,23 @@ function identitytracker_civicrm_alterAPIPermissions($entity, $action, &$params,
   $permissions['contact']['findbyhistory'] = array('view all contacts');
 }
 
+/**
+ * Implements hook_civicrm_navigationMenu().
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_navigationMenu
+ */
+function identitytracker_civicrm_navigationMenu(&$menu) {
+  _identitytracker_civix_insert_navigation_menu($menu, 'Administer/System Settings', array(
+    'label' => ts('Identity Tracker Settings'),
+    'name' => 'Identity Tracker Settings',
+    'url' => 'civicrm/admin/setting/idtracker',
+    'permission' => 'administer CiviCRM',
+    'operator' => 'OR',
+    'separator' => 0,
+  ));
+  _identitytracker_civix_navigationMenu($menu);
+}
+
 
 
 /**
