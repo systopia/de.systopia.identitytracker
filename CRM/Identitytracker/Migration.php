@@ -36,6 +36,8 @@ class CRM_Identitytracker_Migration {
     $id_column    = CRM_Identitytracker_Configuration::ID_FIELD_COLUMN;
     $date_column  = CRM_Identitytracker_Configuration::DATE_FIELD_COLUMN;
 
+    if (empty($install_date)) return;
+
     CRM_Core_DAO::executeQuery("
       INSERT INTO `$group_table` (`entity_id`, `{$type_column}`, `{$id_column}`, `{$date_column}`)
         (SELECT  id AS ch_entity_id,
