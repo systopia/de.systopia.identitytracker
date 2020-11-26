@@ -26,7 +26,7 @@ class CRM_Identitytracker_Upgrader extends CRM_Identitytracker_Upgrader_Base {
    */
   public function enable() {
     // Add XCM matchers
-    $customData = new CRM_Xcm_CustomData(E::LONG_NAME);
+    $customData = new CRM_Identitytracker_CustomData(E::LONG_NAME);
     $customData->syncOptionGroup(E::path('/resources/rules_option_group.json'));
   }
 
