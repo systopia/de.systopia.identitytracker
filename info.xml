@@ -23,6 +23,9 @@
     <ver>5.0</ver>
     <ver>5.5</ver>
   </compatibility>
+  <classloader>
+    <psr4 prefix="Civi\" path="Civi" />
+  </classloader>
   <comments>This extension has initially been funded by Amnesty International Vlaanderen</comments>
   <civix>
     <namespace>CRM/Identitytracker</namespace>
