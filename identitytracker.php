@@ -13,8 +13,17 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
-
 require_once 'identitytracker.civix.php';
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+
+/**
+ * Implements hook_civicrm_container().
+ *
+ * @param ContainerBuilder $container
+ */
+function identitytracker_civicrm_container(ContainerBuilder $container) {
+  $container->addCompilerPass(new Civi\Identitytracker\CompilerPass());
+}
 
 /**
  * implement this hook to make sure we capture all ID changes
@@ -53,7 +62,7 @@ function identitytracker_civicrm_post( $op, $objectName, $objectId, &$objectRef 
 }
 
 /**
- * if custom fields that are identities are written, 
+ * if custom fields that are identities are written,
  *  make sure we copy the value into the identity table
  */
 function identitytracker_civicrm_custom($op, $groupID, $entityID, &$params) {
