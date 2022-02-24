@@ -10,7 +10,6 @@ use \Civi\ActionProvider\Parameter\SpecificationBag;
 use \Civi\ActionProvider\Parameter\Specification;
 
 use Civi\Core\Lock\NullLock;
-use Civi\FormProcessor\API\Exception;
 use CRM_Identitytracker_ExtensionUtil as E;
 
 /**
@@ -49,11 +48,12 @@ class CreateIdentifier extends AbstractAction {
    * @throws ExecutionException
    */
   public function doAction(ParameterBagInterface $parameters, ParameterBagInterface $output) {
+    $type = $this->configuration->getParameter('identifier_type');
     try {
       civicrm_api3('Contact', 'addidentity', [
         'contact_id' => $parameters->getParameter('contact_id'),
         'identifier' => $parameters->getParameter('identifier'),
-        'identifier_type' => $this->configuration->getParameter('identifier_type'),
+        'identifier_type' => $type,
       ]);
     }
     catch (\CiviCRM_API3_Exception $ex) {
