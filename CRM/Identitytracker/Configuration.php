@@ -158,7 +158,7 @@ class CRM_Identitytracker_Configuration {
       if ($group) {
         $reply = civicrm_api3('CustomField', 'get', array(
           'custom_group_id' => $group['id'],
-          'name'            => array('IN', array(self::ID_FIELD_NAME, self::TYPE_FIELD_NAME, self::DATE_FIELD_NAME)),
+          'name'            => array('IN' => array(self::ID_FIELD_NAME, self::TYPE_FIELD_NAME, self::DATE_FIELD_NAME)),
           )
         );
         $this->contact_id_history_fields = array();
