@@ -13,21 +13,28 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
+use \Civi\Api4\Contact;
+
 /**
  * Find contacts based on the contact history
  */
 function civicrm_api3_contact_findbyidentity($params) {
-  // TODO: check if fields are there?
-  
-  $query = CRM_Core_DAO::executeQuery(CRM_Identitytracker_Configuration::getSearchSQL(), array(
-    1 => array($params['identifier_type'], 'String'),
-    2 => array($params['identifier'], 'String'),
-  ));
+  $query = Contact::get()
+    ->addSelect('id')
+    ->addJoin('Custom_' . CRM_Identitytracker_Configuration::GROUP_NAME . ' AS custom_contact_id_history', 'LEFT')
+    ->addWhere('custom_contact_id_history.' . CRM_Identitytracker_Configuration::TYPE_FIELD_NAME, '=', $params['identifier_type'])
+    ->addWhere('custom_contact_id_history.' . CRM_Identitytracker_Configuration::ID_FIELD_NAME, '=', $params['identifier'])
+    ->addWhere('is_deleted', '=', FALSE)
+    ->addGroupBy('id');
 
-  $results = array();
-  while ($query->fetch()) {
-    $results[$query->entity_id] = array('id' => $query->entity_id);
+  if (!empty($params['context'])) {
+    $query->addWhere('custom_contact_id_history.' . CRM_Identitytracker_Configuration::CONTEXT_FIELD_NAME, '=', $params['context']);
   }
+
+  $results = $query
+    ->execute()
+    ->indexBy('id')
+    ->getArrayCopy();
 
   return civicrm_api3_create_success($results);
 }
@@ -38,4 +45,5 @@ function civicrm_api3_contact_findbyidentity($params) {
 function _civicrm_api3_contact_findbyidentity_spec(&$params) {
   $params['identifier']['api.required'] = 1;
   $params['identifier_type']['api.required'] = 1;
+  $params['context']['api.required'] = 0;
 }
