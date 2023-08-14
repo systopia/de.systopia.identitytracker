@@ -27,7 +27,7 @@ function civicrm_api3_contact_findbyidentity($params) {
     ->addWhere('is_deleted', '=', FALSE)
     ->addGroupBy('id');
 
-  if (!empty($params['context'])) {
+  if (isset($params['context'])) {
     $query->addWhere('custom_contact_id_history.' . CRM_Identitytracker_Configuration::CONTEXT_FIELD_NAME, '=', $params['context']);
   }
 
