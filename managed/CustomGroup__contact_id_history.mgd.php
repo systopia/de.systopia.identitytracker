@@ -71,6 +71,7 @@ return [
         'icon' => 'fa-user',
       ],
       'match' => [
+        'option_group_id',
         'name',
       ],
     ],
@@ -93,6 +94,7 @@ return [
         'icon' => 'fa-user-circle',
       ],
       'match' => [
+        'option_group_id',
         'name',
       ],
     ],
