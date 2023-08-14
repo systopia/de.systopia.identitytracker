@@ -21,14 +21,13 @@ use \Civi\Api4\Contact;
 function civicrm_api3_contact_findbyidentity($params) {
   $query = Contact::get()
     ->addSelect('id')
-    ->addJoin('Custom_' . CRM_Identitytracker_Configuration::GROUP_NAME . ' AS custom_contact_id_history', 'LEFT')
-    ->addWhere('custom_contact_id_history.' . CRM_Identitytracker_Configuration::TYPE_FIELD_NAME, '=', $params['identifier_type'])
-    ->addWhere('custom_contact_id_history.' . CRM_Identitytracker_Configuration::ID_FIELD_NAME, '=', $params['identifier'])
+    ->addWhere(CRM_Identitytracker_Configuration::GROUP_NAME . '.' . CRM_Identitytracker_Configuration::TYPE_FIELD_NAME, '=', $params['identifier_type'])
+    ->addWhere(CRM_Identitytracker_Configuration::GROUP_NAME . '.' . CRM_Identitytracker_Configuration::ID_FIELD_NAME, '=', $params['identifier'])
     ->addWhere('is_deleted', '=', FALSE)
     ->addGroupBy('id');
 
   if (isset($params['context'])) {
-    $query->addWhere('custom_contact_id_history.' . CRM_Identitytracker_Configuration::CONTEXT_FIELD_NAME, '=', $params['context']);
+    $query->addWhere(CRM_Identitytracker_Configuration::GROUP_NAME . '.' . CRM_Identitytracker_Configuration::CONTEXT_FIELD_NAME, '=', $params['context']);
   }
 
   $results = $query
