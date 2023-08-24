@@ -23,13 +23,23 @@ function civicrm_api3_contact_addidentity($params) {
 
   // TODO: check if identifier_type exists?
 
-  // create id-entry
-  $query = CRM_Core_DAO::executeQuery(CRM_Identitytracker_Configuration::getInsertSQL(), array(
-    1 => array($params['contact_id'], 'Integer'),
-    2 => array($params['identifier_type'], 'String'),
-    3 => array($params['identifier'], 'String'),
-    4 => array($params['used_since'], 'String'),
-  ));
+  // Insert/Update using APIv4, unique tuples of contact_id, identifier_type,
+  // identifier, and possibly context.
+  \Civi\Api4\CustomValue::save(CRM_Identitytracker_Configuration::GROUP_NAME, FALSE)
+    ->addRecord([
+      'entity_id' => $params['contact_id'],
+      CRM_Identitytracker_Configuration::TYPE_FIELD_NAME => $params['identifier_type'],
+      CRM_Identitytracker_Configuration::ID_FIELD_NAME => $params['identifier'],
+      CRM_Identitytracker_Configuration::DATE_FIELD_NAME => $params['used_since'],
+      CRM_Identitytracker_Configuration::CONTEXT_FIELD_NAME => $params['context'] ?? NULL,
+    ])
+    ->setMatch([
+      'entity_type',
+      CRM_Identitytracker_Configuration::TYPE_FIELD_NAME,
+      CRM_Identitytracker_Configuration::ID_FIELD_NAME,
+      CRM_Identitytracker_Configuration::CONTEXT_FIELD_NAME,
+      ])
+    ->execute();
 
   return civicrm_api3_create_success($params);
 }
@@ -42,4 +52,5 @@ function _civicrm_api3_contact_addidentity_spec(&$params) {
   $params['identifier']['api.required'] = 1;
   $params['identifier_type']['api.required'] = 1;
   $params['used_since']['api.required'] = 0;
+  $params['context']['api.required'] = 0;
 }

@@ -97,9 +97,6 @@ function identitytracker_civicrm_enable() {
   // register the IndentiyAnalyser if CiviBanking is installed
   CRM_Identitytracker_Configuration::registerIdentityAnalyser();
 
-  // make sure the fields are there
-  CRM_Identitytracker_Configuration::instance()->createFieldsIfMissing();
-
   // then see if we need to migrate old data
   CRM_Core_Error::debug_log_message("de.systopia.identitytracker: Migrating internal contact IDs...");
   CRM_Identitytracker_Migration::migrateInternal();

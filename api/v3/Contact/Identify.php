@@ -23,7 +23,7 @@ function civicrm_api3_contact_identify($params) {
   } elseif (count($result['values']) == 1) {
     return $result;
   } else {
-    throw new Exception("More than one contact found.", 1);    
+    throw new Exception("More than one contact found.", 1);
   }
 }
 
@@ -33,4 +33,5 @@ function civicrm_api3_contact_identify($params) {
 function _civicrm_api3_contact_identify_spec(&$params) {
   $params['identifier']['api.required'] = 1;
   $params['identifier_type']['api.required'] = 1;
+  $params['context']['api.required'] = 0;
 }
