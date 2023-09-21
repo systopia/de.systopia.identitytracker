@@ -4,7 +4,7 @@ namespace Civi\Identitytracker\Actions;
 use \Civi\ActionProvider\Action\AbstractAction;
 use Civi\ActionProvider\Exception\ExecutionException;
 use \Civi\ActionProvider\Exception\InvalidParameterException;
-use Civi\ActionProvider\Parameter\OptionGroupByNameSpecification;
+use Civi\ActionProvider\Parameter\OptionGroupSpecification;
 use \Civi\ActionProvider\Parameter\ParameterBagInterface;
 use \Civi\ActionProvider\Parameter\SpecificationBag;
 use \Civi\ActionProvider\Parameter\Specification;
@@ -36,7 +36,7 @@ class CreateIdentifier extends AbstractAction {
    */
   public function getConfigurationSpecification() {
     $specs = new SpecificationBag();
-    $specs->addSpecification(new OptionGroupByNameSpecification('identifier_type', 'contact_id_history_type', E::ts('Contact Identity Type'), TRUE));
+    $specs->addSpecification(new OptionGroupSpecification('identifier_type', 'contact_id_history_type', E::ts('Contact Identity Type'), TRUE));
     return $specs;
   }
 
