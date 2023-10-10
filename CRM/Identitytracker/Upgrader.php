@@ -19,7 +19,7 @@ use CRM_Identitytracker_ExtensionUtil as E;
 /**
  * Collection of upgrade steps.
  */
-class CRM_Identitytracker_Upgrader extends CRM_Identitytracker_Upgrader_Base {
+class CRM_Identitytracker_Upgrader extends CRM_Extension_Upgrader_Base {
 
   /**
    * Extension is enabled
