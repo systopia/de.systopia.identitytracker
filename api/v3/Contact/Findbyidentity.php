@@ -19,7 +19,7 @@ use \Civi\Api4\Contact;
  * Find contacts based on the contact history
  */
 function civicrm_api3_contact_findbyidentity($params) {
-  $query = Contact::get()
+  $query = Contact::get(FALSE)
     ->addSelect('id')
     ->addWhere(CRM_Identitytracker_Configuration::GROUP_NAME . '.' . CRM_Identitytracker_Configuration::TYPE_FIELD_NAME, '=', $params['identifier_type'])
     ->addWhere(CRM_Identitytracker_Configuration::GROUP_NAME . '.' . CRM_Identitytracker_Configuration::ID_FIELD_NAME, '=', $params['identifier'])
