@@ -24,16 +24,19 @@ class CRM_Identitytracker_Upgrader extends CRM_Extension_Upgrader_Base {
   /**
    * Extension is enabled
    */
-  public function enable() {
+  public function enable(): void {
     // Add XCM matchers
     $customData = new CRM_Identitytracker_CustomData(E::LONG_NAME);
     $customData->syncOptionGroup(E::path('/resources/rules_option_group.json'));
+
+    // register the IndentiyAnalyser if CiviBanking is installed
+    CRM_Identitytracker_Configuration::registerIdentityAnalyser();
   }
 
   /**
    * Extension is disabled
    */
-  public function disable() {
+  public function disable(): void {
     // Remove XCM matchers
     $matchers = ['CRM_Xcm_Matcher_IdTrackerInternalMatcher', 'CRM_Xcm_Matcher_IdTrackerExternalMatcher'];
     foreach ($matchers as $matcher_name) {
@@ -44,6 +47,14 @@ class CRM_Identitytracker_Upgrader extends CRM_Extension_Upgrader_Base {
         civicrm_api3('OptionValue', 'delete', ['id' => $entry['id']]);
       }
     }
+  }
+
+  public function postInstall(): void {
+    Civi::log()->debug('de.systopia.identitytracker: Migrating internal contact IDs...');
+    CRM_Identitytracker_Migration::migrateInternal();
+    Civi::log()->debug('de.systopia.identitytracker: Migrating external contact IDs...');
+    CRM_Identitytracker_Migration::migrateExternal();
+    Civi::log()->debug('de.systopia.identitytracker: Migration completed.');
   }
 
   /**
