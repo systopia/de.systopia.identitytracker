@@ -93,16 +93,6 @@ function identitytracker_civicrm_custom($op, $groupID, $entityID, &$params) {
  */
 function identitytracker_civicrm_enable() {
   _identitytracker_civix_civicrm_enable();
-
-  // register the IndentiyAnalyser if CiviBanking is installed
-  CRM_Identitytracker_Configuration::registerIdentityAnalyser();
-
-  // then see if we need to migrate old data
-  CRM_Core_Error::debug_log_message("de.systopia.identitytracker: Migrating internal contact IDs...");
-  CRM_Identitytracker_Migration::migrateInternal();
-  CRM_Core_Error::debug_log_message("de.systopia.identitytracker: Migrating external contact IDs...");
-  CRM_Identitytracker_Migration::migrateExternal();
-  CRM_Core_Error::debug_log_message("de.systopia.identitytracker: Migration completed.");
 }
 
 /**
