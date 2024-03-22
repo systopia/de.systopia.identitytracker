@@ -19,3 +19,13 @@ Each identifier may also get a *context*, which will be useful for extension
 developers to make use of for distinguishing between identifiers of the same
 type, e.&nbsp;g. for multiple API keys belonging to same web service. This field
 will have to be enabled before using it, e.&nbsp;g. with a managed entity.
+
+## Known Issues
+
+!!! bug "Incompatible with CiviCRM Core `5.71` prior to version `1.4`"
+
+    The extension is incompatible with CiviCRM Core starting from version
+    `5.71.0` due to misuse of the API internally (which actually worked by
+    accident). *Identity Tracker* version `1.4` fixes this incompatibility.
+    See [this pull request](https://github.com/systopia/de.systopia.identitytracker/pull/24)
+    for detailed information.
