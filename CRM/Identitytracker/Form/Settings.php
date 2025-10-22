@@ -103,8 +103,8 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
     // store
     $mapping = array();
     for ($i=0; $i <= self::CUSTOM_FIELD_COUNT; $i++) {
-      $custom_field  = CRM_Utils_Array::value("custom_field_$i", $values, NULL);
-      $identity_type = CRM_Utils_Array::value("identity_type_$i", $values, NULL);
+      $custom_field  = $values["custom_field_$i"] ?? NULL;
+      $identity_type = $values["identity_type_$i"] ?? NULL;
       if (!empty($custom_field) && !empty($identity_type)) {
         $mapping[$custom_field] = $identity_type;
       }
