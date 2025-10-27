@@ -193,7 +193,7 @@ class CRM_Identitytracker_Configuration {
    * Checks it an $option_value already exists, and if not create it
    * @param $option_type
    *
-   * @throws \CiviCRM_API3_Exception
+   * @throws \CRM_Core_Exception
    */
   public static function add_identity_type($option_type, $option_label)
   {

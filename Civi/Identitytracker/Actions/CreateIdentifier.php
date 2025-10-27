@@ -56,7 +56,7 @@ class CreateIdentifier extends AbstractAction {
         'identifier_type' => $type,
       ]);
     }
-    catch (\CiviCRM_API3_Exception $ex) {
+    catch (\CRM_Core_Exception $ex) {
       throw new ExecutionException(E::ts('Error in API Contact addidentity with message: ') . $ex->getMessage());
     }
   }
