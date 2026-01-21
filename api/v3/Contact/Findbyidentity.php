@@ -13,7 +13,7 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
-use \Civi\Api4\Contact;
+use Civi\Api4\Contact;
 
 /**
  * Find contacts based on the contact history

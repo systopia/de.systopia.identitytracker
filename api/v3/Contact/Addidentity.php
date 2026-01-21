@@ -19,7 +19,9 @@
 function civicrm_api3_contact_addidentity($params) {
 
   // set used_since to now if not given
-  if (empty($params['used_since'])) $params['used_since'] = date("YmdHis");
+  if (empty($params['used_since'])) {
+    $params['used_since'] = date('YmdHis');
+  }
 
   // TODO: check if identifier_type exists?
 
@@ -38,7 +40,7 @@ function civicrm_api3_contact_addidentity($params) {
       CRM_Identitytracker_Configuration::TYPE_FIELD_NAME,
       CRM_Identitytracker_Configuration::ID_FIELD_NAME,
       CRM_Identitytracker_Configuration::CONTEXT_FIELD_NAME,
-      ])
+    ])
     ->execute();
 
   return civicrm_api3_create_success($params);

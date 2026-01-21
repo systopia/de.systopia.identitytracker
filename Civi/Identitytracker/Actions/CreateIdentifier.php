@@ -1,15 +1,13 @@
 <?php
 namespace Civi\Identitytracker\Actions;
 
-use \Civi\ActionProvider\Action\AbstractAction;
+use Civi\ActionProvider\Action\AbstractAction;
 use Civi\ActionProvider\Exception\ExecutionException;
-use \Civi\ActionProvider\Exception\InvalidParameterException;
 use Civi\ActionProvider\Parameter\OptionGroupSpecification;
-use \Civi\ActionProvider\Parameter\ParameterBagInterface;
-use \Civi\ActionProvider\Parameter\SpecificationBag;
-use \Civi\ActionProvider\Parameter\Specification;
+use Civi\ActionProvider\Parameter\ParameterBagInterface;
+use Civi\ActionProvider\Parameter\SpecificationBag;
+use Civi\ActionProvider\Parameter\Specification;
 
-use Civi\Core\Lock\NullLock;
 use CRM_Identitytracker_ExtensionUtil as E;
 
 /**
@@ -22,7 +20,7 @@ use CRM_Identitytracker_ExtensionUtil as E;
 class CreateIdentifier extends AbstractAction {
 
   /**
-   * @return SpecificationBag
+   * @return \Civi\ActionProvider\Parameter\SpecificationBag
    */
   public function getParameterSpecification() {
     $specs = new SpecificationBag();
@@ -32,7 +30,7 @@ class CreateIdentifier extends AbstractAction {
   }
 
   /**
-   * @return SpecificationBag
+   * @return \Civi\ActionProvider\Parameter\SpecificationBag
    */
   public function getConfigurationSpecification() {
     $specs = new SpecificationBag();
@@ -43,8 +41,8 @@ class CreateIdentifier extends AbstractAction {
   /**
    * Do the actual action - add identifier to contact
    *
-   * @param ParameterBagInterface $parameters
-   * @param ParameterBagInterface $output
+   * @param \Civi\ActionProvider\Parameter\ParameterBagInterface $parameters
+   * @param \Civi\ActionProvider\Parameter\ParameterBagInterface $output
    * @throws ExecutionException
    */
   public function doAction(ParameterBagInterface $parameters, ParameterBagInterface $output) {
@@ -60,12 +58,13 @@ class CreateIdentifier extends AbstractAction {
       throw new ExecutionException(E::ts('Error in API Contact addidentity with message: ') . $ex->getMessage());
     }
   }
+
   /**
    * Returns the specification of the output parameters of this action.
    *
    * This function could be overriden by child classes.
    *
-   * @return SpecificationBag
+   * @return \Civi\ActionProvider\Parameter\SpecificationBag
    */
   public function getOutputSpecification() {
     return new SpecificationBag();

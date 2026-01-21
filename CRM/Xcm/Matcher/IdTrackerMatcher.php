@@ -13,19 +13,22 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
-/*
+/**
+ *
  * This will execute a matching process based on the configuration,
  * employing various matching rules
+ *
  */
 class CRM_Xcm_Matcher_IdTrackerMatcher extends CRM_Xcm_MatchingRule {
 
-  /** which identity_type are we using? */
+  /**
+   * which identity_type are we using? */
   protected $identity_type = NULL;
 
   // list of fields to look into
   protected $fields = [];
 
-  function __construct($identity_type, $fields) {
+  public function __construct($identity_type, $fields) {
     $this->identity_type = $identity_type;
     $this->fields = $fields;
   }
@@ -40,8 +43,8 @@ class CRM_Xcm_Matcher_IdTrackerMatcher extends CRM_Xcm_MatchingRule {
       if (!empty($contact_data[$field])) {
         $contact_ids    = [];
         $contact_search = civicrm_api3('Contact', 'findbyidentity', [
-            'identifier_type' => $this->identity_type,
-            'identifier'      => $contact_data[$field]
+          'identifier_type' => $this->identity_type,
+          'identifier'      => $contact_data[$field],
         ]);
         foreach ($contact_search['values'] as $contact) {
           $contact_ids[] = $contact['id'];
@@ -50,13 +53,16 @@ class CRM_Xcm_Matcher_IdTrackerMatcher extends CRM_Xcm_MatchingRule {
         switch (count($contact_ids)) {
           case 0:
             return $this->createResultUnmatched();
+
           case 1:
             return $this->createResultMatched(reset($contact_ids));
+
           default:
             $contact_id = $this->pickContact($contact_ids);
             if ($contact_id) {
               return $this->createResultMatched($contact_id);
-            } else {
+            }
+            else {
               return $this->createResultUnmatched();
             }
         }
@@ -66,4 +72,5 @@ class CRM_Xcm_Matcher_IdTrackerMatcher extends CRM_Xcm_MatchingRule {
     // if we get here, none of the values was present
     return $this->createResultUnmatched();
   }
+
 }

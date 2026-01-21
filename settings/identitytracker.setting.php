@@ -13,8 +13,8 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
-return array(
-  'identitytracker_mapping' => array(
+return [
+  'identitytracker_mapping' => [
     'group_name' => 'Identity Tracker',
     'group' => 'de.systopia.identitytracker',
     'name' => 'identitytracker_mapping',
@@ -23,5 +23,5 @@ return array(
     'title' => 'Custom Field Mapping',
     'is_domain' => 1,
     'is_contact' => 0,
-  ),
- );
+  ],
+];

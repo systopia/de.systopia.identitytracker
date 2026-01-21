@@ -13,8 +13,10 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
-/*
+/**
+ *
  * Configuration wrapper
+ *
  */
 class CRM_Identitytracker_Configuration {
 
@@ -39,6 +41,7 @@ class CRM_Identitytracker_Configuration {
   protected $contact_id_option_group   = NULL;
 
   protected static $singleton = NULL;
+
   protected function __construct() {}
 
   public static function instance() {
@@ -47,8 +50,6 @@ class CRM_Identitytracker_Configuration {
     }
     return self::$singleton;
   }
-
-
 
   public static function getSearchSQL() {
     $group_table  = self::GROUP_TABLE;
@@ -93,11 +94,11 @@ class CRM_Identitytracker_Configuration {
     $fields = $this->getIdentitytrackerFields();
     if (empty($fields[$field_name]['id'])) {
       return NULL;
-    } else {
+    }
+    else {
       return $fields[$field_name]['id'];
     }
   }
-
 
   /**
    * get the custom group entity used for the contact history
@@ -105,21 +106,21 @@ class CRM_Identitytracker_Configuration {
   public function getIdentitytrackerGroup() {
     if ($this->contact_id_history_group === NULL) {
       try {
-        $this->contact_id_history_group = civicrm_api3('CustomGroup', 'getsingle', array('name' => self::GROUP_NAME));
+        $this->contact_id_history_group = civicrm_api3('CustomGroup', 'getsingle', ['name' => self::GROUP_NAME]);
       }
       catch (Exception $e) {
         // that should simply mean that there is no such group
-        $this->contact_id_history_group = array();
+        $this->contact_id_history_group = [];
       }
     }
 
     if (empty($this->contact_id_history_group)) {
       return NULL;
-    } else {
+    }
+    else {
       return $this->contact_id_history_group;
     }
   }
-
 
   /**
    * Get the ID type option group ID, if it exists
@@ -127,20 +128,21 @@ class CRM_Identitytracker_Configuration {
   public function getOptionGroupID() {
     if ($this->contact_id_option_group === NULL) {
       try {
-        $this->contact_id_option_group = civicrm_api3('OptionGroup', 'getsingle', array('name' => self::TYPE_GROUP_NAME));
-      } catch (Exception $e) {
+        $this->contact_id_option_group = civicrm_api3('OptionGroup', 'getsingle', ['name' => self::TYPE_GROUP_NAME]);
+      }
+      catch (Exception $e) {
         // group doesn't exist
-        $this->contact_id_option_group = array();
+        $this->contact_id_option_group = [];
       }
     }
 
     if (empty($this->contact_id_option_group['id'])) {
       return NULL;
-    } else {
+    }
+    else {
       return $this->contact_id_option_group['id'];
     }
   }
-
 
   /**
    * get the list of the custom fields used
@@ -149,12 +151,12 @@ class CRM_Identitytracker_Configuration {
     if ($this->contact_id_history_fields === NULL) {
       $group = $this->getIdentitytrackerGroup();
       if ($group) {
-        $reply = civicrm_api3('CustomField', 'get', array(
+        $reply = civicrm_api3('CustomField', 'get', [
           'custom_group_id' => $group['id'],
-          'name'            => array('IN' => array(self::ID_FIELD_NAME, self::TYPE_FIELD_NAME, self::DATE_FIELD_NAME)),
-          )
+          'name'            => ['IN' => [self::ID_FIELD_NAME, self::TYPE_FIELD_NAME, self::DATE_FIELD_NAME]],
+        ]
         );
-        $this->contact_id_history_fields = array();
+        $this->contact_id_history_fields = [];
         foreach ($reply['values'] as $field) {
           $this->contact_id_history_fields[$field['name']] = $field;
         }
@@ -162,7 +164,6 @@ class CRM_Identitytracker_Configuration {
     }
     return $this->contact_id_history_fields;
   }
-
 
   /**
    * get the configured mapping
@@ -175,8 +176,9 @@ class CRM_Identitytracker_Configuration {
     $mapping = CRM_Core_BAO_Setting::getItem('de.systopia.identitytracker', 'identitytracker_mapping');
     if (is_array($mapping)) {
       return $mapping;
-    } else {
-      return array();
+    }
+    else {
+      return [];
     }
   }
 
@@ -186,7 +188,7 @@ class CRM_Identitytracker_Configuration {
    * @param $mapping array
    */
   public function setCustomFieldMapping($mapping) {
-    CRM_Core_BAO_Setting::setItem($mapping, 'de.systopia.identitytracker', 'identitytracker_mapping');
+    Civi::settings()->set('identitytracker_mapping', $mapping);
   }
 
   /**
@@ -195,18 +197,17 @@ class CRM_Identitytracker_Configuration {
    *
    * @throws \CRM_Core_Exception
    */
-  public static function add_identity_type($option_type, $option_label)
-  {
+  public static function add_identity_type($option_type, $option_label) {
     $result = civicrm_api3('OptionValue', 'get', [
-        'sequential'      => 1,
-        'option_group_id' => "contact_id_history_type",
-        'value'           => $option_type,
+      'sequential'      => 1,
+      'option_group_id' => 'contact_id_history_type',
+      'value'           => $option_type,
     ]);
     if ($result['count'] == '0') {
       civicrm_api3('OptionValue', 'create', [
-          'option_group_id' => "contact_id_history_type",
-          "value"           => $option_type,
-          "label"           => $option_label,
+        'option_group_id' => 'contact_id_history_type',
+        'value'           => $option_type,
+        'label'           => $option_label,
       ]);
     }
   }
@@ -219,18 +220,20 @@ class CRM_Identitytracker_Configuration {
     if (!empty($option_groups['id'])) {
       // the option group exists, CiviBanking seems to be there
       $entries = civicrm_api3('OptionValue', 'get', [
-          'name'            => 'analyser_identity',
-          'option_group_id' => $option_groups['id']]);
+        'name'            => 'analyser_identity',
+        'option_group_id' => $option_groups['id'],
+      ]);
       if ($entries['count'] == 0) {
         civicrm_api3('OptionValue', 'create', [
-            'name'            => 'analyser_identity',
-            'label'           => 'Identity Analyser',
-            'value'           => 'CRM_Banking_PluginImpl_Matcher_IdentityAnalyser',
-            'is_default'      => 0,
-            'description'     => 'Uses the ID Tracker Data to look up Contact IDs',
-            'option_group_id' => $option_groups['id']
+          'name'            => 'analyser_identity',
+          'label'           => 'Identity Analyser',
+          'value'           => 'CRM_Banking_PluginImpl_Matcher_IdentityAnalyser',
+          'is_default'      => 0,
+          'description'     => 'Uses the ID Tracker Data to look up Contact IDs',
+          'option_group_id' => $option_groups['id'],
         ]);
       }
     }
   }
+
 }

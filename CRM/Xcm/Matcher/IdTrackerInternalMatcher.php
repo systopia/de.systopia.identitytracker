@@ -13,11 +13,15 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
-/*
+/**
+ *
  * Will use the ID tracker to match the fields 'xcm_submitted_contact_id' (and the legacy: 'id')
+ *
  */
 class CRM_Xcm_Matcher_IdTrackerInternalMatcher extends CRM_Xcm_Matcher_IdTrackerMatcher {
-  function __construct() {
+
+  public function __construct() {
     parent::__construct(CRM_Identitytracker_Configuration::TYPE_INTERNAL, ['xcm_submitted_contact_id', 'id']);
   }
+
 }

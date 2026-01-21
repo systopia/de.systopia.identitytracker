@@ -13,11 +13,15 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
-/*
+/**
+ *
  * Will use the ID tracker to match the field 'external_identifier'
+ *
  */
 class CRM_Xcm_Matcher_IdTrackerExternalMatcher extends CRM_Xcm_Matcher_IdTrackerMatcher {
-  function __construct() {
+
+  public function __construct() {
     parent::__construct(CRM_Identitytracker_Configuration::TYPE_EXTERNAL, ['external_identifier']);
   }
+
 }

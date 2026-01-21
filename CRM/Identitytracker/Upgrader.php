@@ -41,8 +41,9 @@ class CRM_Identitytracker_Upgrader extends CRM_Extension_Upgrader_Base {
     $matchers = ['CRM_Xcm_Matcher_IdTrackerInternalMatcher', 'CRM_Xcm_Matcher_IdTrackerExternalMatcher'];
     foreach ($matchers as $matcher_name) {
       $entry = civicrm_api3('OptionValue', 'get', [
-          'name'            => $matcher_name,
-          'option_group_id' => 'xcm_matching_rules']);
+        'name'            => $matcher_name,
+        'option_group_id' => 'xcm_matching_rules',
+      ]);
       if (!empty($entry['id'])) {
         civicrm_api3('OptionValue', 'delete', ['id' => $entry['id']]);
       }
@@ -79,4 +80,5 @@ class CRM_Identitytracker_Upgrader extends CRM_Extension_Upgrader_Base {
     $this->enable();
     return TRUE;
   }
+
 }

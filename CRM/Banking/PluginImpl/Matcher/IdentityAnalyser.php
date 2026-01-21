@@ -21,19 +21,25 @@ class CRM_Banking_PluginImpl_Matcher_IdentityAnalyser extends CRM_Banking_Plugin
   /**
    * class constructor
    */
-  function __construct($config_name) {
+  public function __construct($config_name) {
     parent::__construct($config_name);
 
     // read config, set defaults
     $config = $this->_plugin_config;
-    if (!isset($config->fields)) $config->fields = [
-            'contact_id' => [
-              'target'           => 'contact_id',   // default is: same field (in-place)
-              'identity_type'    => 'internal',     // or 'external', or any other
-              'overwrite_target' => true,           // overwrite target: only run if target is empty. Default is true
-              'if_not_found'     => 'reset',        // see https://github.com/systopia/de.systopia.identitytracker/issues/8
-            ]
-          ];
+    if (!isset($config->fields)) {
+      $config->fields = [
+        'contact_id' => [
+      // default is: same field (in-place)
+          'target'           => 'contact_id',
+      // or 'external', or any other
+          'identity_type'    => 'internal',
+      // overwrite target: only run if target is empty. Default is true
+          'overwrite_target' => TRUE,
+      // see https://github.com/systopia/de.systopia.identitytracker/issues/8
+          'if_not_found'     => 'reset',
+        ],
+      ];
+    }
   }
 
   /**
@@ -42,7 +48,7 @@ class CRM_Banking_PluginImpl_Matcher_IdentityAnalyser extends CRM_Banking_Plugin
   public function analyse(CRM_Banking_BAO_BankTransaction $btx, CRM_Banking_Matcher_Context $context) {
     $config = $this->_plugin_config;
     if (empty($config->fields) || !is_object($config->fields)) {
-      $this->logMessage("Fields incorrectly configured.", 'warn');
+      $this->logMessage('Fields incorrectly configured.', 'warn');
       return;
     }
 
@@ -52,7 +58,7 @@ class CRM_Banking_PluginImpl_Matcher_IdentityAnalyser extends CRM_Banking_Plugin
       // get the parameters for this field
       $specs = (array) $specs;
       $target           = empty($specs['target']) ? $field : $specs['target'];
-      $overwrite_target = isset($specs['overwrite_target']) ? $specs['overwrite_target'] : true;
+      $overwrite_target = isset($specs['overwrite_target']) ? $specs['overwrite_target'] : TRUE;
       $identity_type    = $specs['identity_type'];
       $if_not_found     = empty($specs['if_not_found']) ? 'reset' : $specs['if_not_found'];
       $status_field     = empty($specs['status_field']) ? '' : $specs['status_field'];
@@ -78,14 +84,16 @@ class CRM_Banking_PluginImpl_Matcher_IdentityAnalyser extends CRM_Banking_Plugin
       // here's a value: investigate!
       try {
         $result = civicrm_api3('Contact', 'findbyidentity', [
-            'identifier_type' => $identity_type,
-            'identifier'      => $data_parsed[$field]]);
+          'identifier_type' => $identity_type,
+          'identifier'      => $data_parsed[$field],
+        ]);
         if ($result['count'] == 1) {
           # FOUND IT
           if ($data_parsed[$target] != $result['id']) {
             $this->logMessage("{$identity_type} ID '{$data_parsed[$field]}' ({$field}) resolved to '{$result['id']}'.", 'debug');
             $data_parsed[$target] = $result['id'];
-          } else {
+          }
+          else {
             $this->logMessage("{$identity_type} ID '{$data_parsed[$field]}' ({$field}) confirmed.", 'debug');
           }
 
@@ -94,7 +102,8 @@ class CRM_Banking_PluginImpl_Matcher_IdentityAnalyser extends CRM_Banking_Plugin
             $data_parsed[$status_field] = 'IDENTIFIED';
           }
 
-        } else {
+        }
+        else {
           # NO (unique) MATCH
           $this->logMessage("{$identity_type} ID '{$data_parsed[$field]}' ({$field}) not identified.", 'debug');
 
@@ -127,18 +136,21 @@ class CRM_Banking_PluginImpl_Matcher_IdentityAnalyser extends CRM_Banking_Plugin
           if ($status_field) {
             if ($result['count'] > 1) {
               $data_parsed[$status_field] = 'AMBIGUOUS';
-            } else {
+            }
+            else {
               $data_parsed[$status_field] = 'UNKNOWN';
             }
           }
         }
 
-      } catch (Exception $ex) {
-        $this->logMessage("Lookup error: " . $ex->getMessage(), 'error');
+      }
+      catch (Exception $ex) {
+        $this->logMessage('Lookup error: ' . $ex->getMessage(), 'error');
       }
     }
 
     // SAVE changes and that's it
     $btx->setDataParsed($data_parsed);
   }
+
 }
