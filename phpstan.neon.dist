@@ -10,6 +10,7 @@ parameters:
 	excludePaths:
 		analyse:
 			- CRM/Identitytracker/DAO/*
+			- CRM/Identitytracker/CustomData.php
 			- tests/phpunit/bootstrap.php
 	scanFiles:
 		- identitytracker.civix.php
@@ -17,6 +18,9 @@ parameters:
 	scanDirectories:
 		- tools/phpunit/vendor/bin/.phpunit/phpunit/src/Framework
 		- mixin
+		- ../action-provider/Civi
+		- ../de.systopia.xcm/CRM
+		- ../org.project60.banking/CRM
 	bootstrapFiles:
 		- tools/phpunit/vendor/bin/.phpunit/phpunit/vendor/autoload.php
 		- phpstanBootstrap.php
