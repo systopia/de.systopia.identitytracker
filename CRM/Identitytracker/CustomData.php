@@ -15,6 +15,9 @@
  * | written permission from the original author(s).        |
  * +--------------------------------------------------------
  */
+
+declare(strict_types = 1);
+
 class CRM_Identitytracker_CustomData {
   const CUSTOM_DATA_HELPER_VERSION   = '0.10';
   const CUSTOM_DATA_HELPER_LOG_LEVEL = 0;
@@ -320,6 +323,7 @@ class CRM_Identitytracker_CustomData {
         elseif (isset($current_data[$required_field])) {
           $update_query[$required_field] = $current_data[$required_field];
         }
+        // phpcs:ignore
         else {
           // nothing we can do...
         }
@@ -490,6 +494,7 @@ class CRM_Identitytracker_CustomData {
             $data[$custom_key] = $data[$key];
             unset($data[$key]);
           }
+          // phpcs:ignore
           else {
             // TODO: unknown data field $match['group_name'] . $match['field_name']
           }
@@ -844,7 +849,7 @@ class CRM_Identitytracker_CustomData {
    * This function was specifically introduced as 1:1 replacement
    *  for the deprecated CRM_Core_OptionGroup::getValue function
    *
-   * @param string $groupName
+   * @param string $group_name
    *   name of the group
    *
    * @param $label

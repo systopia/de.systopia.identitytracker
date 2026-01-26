@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types = 1);
+
 namespace Civi\Identitytracker\Actions;
 
 use Civi\ActionProvider\Action\AbstractAction;
@@ -55,7 +58,7 @@ class CreateIdentifier extends AbstractAction {
       ]);
     }
     catch (\CRM_Core_Exception $ex) {
-      throw new ExecutionException(E::ts('Error in API Contact addidentity with message: ') . $ex->getMessage());
+      throw new ExecutionException(E::ts('Error in API Contact addidentity with message: ') . $ex->getMessage(), 0, $ex);
     }
   }
 

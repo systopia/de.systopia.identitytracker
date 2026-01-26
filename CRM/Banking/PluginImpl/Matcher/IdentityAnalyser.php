@@ -13,6 +13,8 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 /**
  * This matcher will use the tracked identities to resolve id fields
  */
@@ -45,6 +47,7 @@ class CRM_Banking_PluginImpl_Matcher_IdentityAnalyser extends CRM_Banking_Plugin
   /**
    * Analyse given fields
    */
+  // phpcs:ignore
   public function analyse(CRM_Banking_BAO_BankTransaction $btx, CRM_Banking_Matcher_Context $context) {
     $config = $this->_plugin_config;
     if (empty($config->fields) || !is_object($config->fields)) {
@@ -54,6 +57,7 @@ class CRM_Banking_PluginImpl_Matcher_IdentityAnalyser extends CRM_Banking_Plugin
 
     // iterate through the specs
     $data_parsed = $btx->getDataParsed();
+    /** @phpstan-ignore foreach.nonIterable */
     foreach ($config->fields as $field => $specs) {
       // get the parameters for this field
       $specs = (array) $specs;
@@ -146,6 +150,7 @@ class CRM_Banking_PluginImpl_Matcher_IdentityAnalyser extends CRM_Banking_Plugin
       }
       catch (Exception $ex) {
         $this->logMessage('Lookup error: ' . $ex->getMessage(), 'error');
+        // @ignoreException
       }
     }
 

@@ -13,6 +13,8 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 require_once 'CRM/Core/Form.php';
 
 
@@ -24,6 +26,17 @@ require_once 'CRM/Core/Form.php';
 class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
 
   const CUSTOM_FIELD_COUNT = 5;
+
+  private CRM_Identitytracker_Configuration $configuration;
+
+  public function __construct($state = NULL, $action = CRM_Core_Action::NONE, $method = 'post', $name = NULL) {
+    parent::__construct($state, $action, $method, $name);
+    $configuration = CRM_Identitytracker_Configuration::instance();
+    if ($configuration === NULL) {
+      throw new RuntimeException('Configuration not found!');
+    }
+    $this->configuration = $configuration;
+  }
 
   public function buildQuickForm() {
 
@@ -59,8 +72,7 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
     $this->assign('config_rows', $config_rows);
 
     // add a link to the custom group
-    $configuration = CRM_Identitytracker_Configuration::instance();
-    $group_id = $configuration->getOptionGroupID();
+    $group_id = $this->configuration->getOptionGroupID();
     $option_group_url = CRM_Utils_System::url('civicrm/admin/options', "reset=1&gid={$group_id}");
     $this->assign('option_group_url', $option_group_url);
 
@@ -76,11 +88,10 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
     parent::buildQuickForm();
   }
 
-  public function setDefaultValues() {
+  public function setDefaultValues(): array {
     $defaults = parent::setDefaultValues();
 
-    $configuration = CRM_Identitytracker_Configuration::instance();
-    $mapping = $configuration->getCustomFieldMapping();
+    $mapping = $this->configuration->getCustomFieldMapping();
 
     if ($mapping) {
       $i = 0;
@@ -107,8 +118,7 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
       }
     }
 
-    $configuration = CRM_Identitytracker_Configuration::instance();
-    $configuration->setCustomFieldMapping($mapping);
+    $this->configuration->setCustomFieldMapping($mapping);
 
     // migrate all (TODO: only changes?)
     foreach ($mapping as $custom_field_id => $identity_type) {
@@ -121,7 +131,8 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
   /**
    * get the list of identity types
    */
-  protected function getIdentityTypes() {
+  protected function getIdentityTypes(): array {
+    $identity_types = [];
     $identity_types_query = civicrm_api3('OptionValue', 'get', [
       'option_group_id' => 'contact_id_history_type',
       'return'          => 'value,label',
@@ -153,6 +164,7 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
       'extends'       => ['IN' => $contact_types],
       'option.limit'  => 0,
     ]);
+    $custom_groups = [];
     foreach ($custom_groups_query['values'] as $custom_group) {
       $custom_groups[] = $custom_group['id'];
     }
@@ -163,13 +175,13 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
       'custom_group_id' => ['IN' => $custom_groups],
       'option.limit'    => 0,
     ]);
+    $custom_fields = [];
     foreach ($custom_fields_query['values'] as $custom_field) {
       $custom_fields[$custom_field['id']] = $custom_field['label'];
     }
 
     // remove our own fields
-    $configuration = CRM_Identitytracker_Configuration::instance();
-    $own_fields = $configuration->getIdentitytrackerFields();
+    $own_fields = $this->configuration->getIdentitytrackerFields();
     foreach ($own_fields as $own_field) {
       $own_field_id = $own_field['id'];
       if (isset($custom_fields[$own_field_id])) {

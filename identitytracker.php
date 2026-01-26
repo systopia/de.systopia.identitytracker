@@ -13,6 +13,8 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 require_once 'identitytracker.civix.php';
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -28,16 +30,16 @@ function identitytracker_civicrm_container(ContainerBuilder $container) {
 /**
  * implement this hook to make sure we capture all ID changes
  */
-function identitytracker_civicrm_post($op, $objectName, $objectId, &$objectRef) {
-  if ($op == 'edit' || $op == 'create' || $op == 'update') {
-    if ($objectName == 'Individual' || $objectName == 'Organization' || $objectName == 'Household') {
-      if (!empty($objectRef->external_identifier) && ($objectRef->external_identifier != 'null')) {
+function identitytracker_civicrm_post($op, $objectName, $objectId, &$objectRef): void {
+  if ($op === 'edit' || $op === 'create' || $op === 'update') {
+    if (in_array($objectName, ['Individual', 'Organization', 'Household'], TRUE)) {
+      if (!empty($objectRef->external_identifier) && ($objectRef->external_identifier !== 'null')) {
         $exists = CRM_Core_DAO::singleValueQuery(CRM_Identitytracker_Configuration::getLookupSQL(), [
           1 => [$objectId, 'Integer'],
           2 => [CRM_Identitytracker_Configuration::TYPE_EXTERNAL, 'String'],
           3 => [$objectRef->external_identifier, 'String'],
         ]);
-        if (!$exists) {
+        if ($exists === NULL || $exists === '') {
           CRM_Core_DAO::executeQuery(CRM_Identitytracker_Configuration::getInsertSQL(), [
             1 => [$objectId, 'Integer'],
             2 => [CRM_Identitytracker_Configuration::TYPE_EXTERNAL, 'String'],
@@ -47,7 +49,7 @@ function identitytracker_civicrm_post($op, $objectName, $objectId, &$objectRef) 
         }
       }
 
-      if ($op == 'create') {
+      if ($op === 'create') {
         // copy contact's CiviCRM ID once upon creation
         CRM_Core_DAO::executeQuery(CRM_Identitytracker_Configuration::getInsertSQL(), [
           1 => [$objectId, 'Integer'],
@@ -66,10 +68,11 @@ function identitytracker_civicrm_post($op, $objectName, $objectId, &$objectRef) 
  *  make sure we copy the value into the identity table
  */
 function identitytracker_civicrm_custom($op, $groupID, $entityID, &$params) {
-  if ($op != 'create' && $op != 'edit') {
+  if ($op !== 'create' && $op !== 'edit') {
     return;
   }
 
+  /** @var CRM_Identitytracker_Configuration $configuration */
   $configuration = CRM_Identitytracker_Configuration::instance();
   $mapping = $configuration->getCustomFieldMapping();
   foreach ($params as $write) {

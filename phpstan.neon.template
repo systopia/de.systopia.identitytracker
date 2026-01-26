@@ -11,3 +11,17 @@ parameters:
 		- {VENDOR_DIR}/civicrm/civicrm-packages/HTML
 	bootstrapFiles:
 		- {VENDOR_DIR}/autoload.php
+
+# For standalone CiviCRM installations, comment out the above "parameters" section and use the following configuration:
+#
+#parametersSchema:
+#	isStandalone: bool()
+#
+#parameters:
+#	isStandalone: true
+#	scanDirectories:
+#		- {VENDOR_DIR}/../../CRM
+#		- {VENDOR_DIR}/../../api
+#		- {VENDOR_DIR}/../../packages/HTML
+#	bootstrapFiles:
+#		- {VENDOR_DIR}/../../vendor/autoload.php

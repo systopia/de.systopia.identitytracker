@@ -13,6 +13,8 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 /**
  *
  * This will execute a matching process based on the configuration,
@@ -23,10 +25,10 @@ class CRM_Xcm_Matcher_IdTrackerMatcher extends CRM_Xcm_MatchingRule {
 
   /**
    * which identity_type are we using? */
-  protected $identity_type = NULL;
+  protected ?string $identity_type = NULL;
 
   // list of fields to look into
-  protected $fields = [];
+  protected array $fields = [];
 
   public function __construct($identity_type, $fields) {
     $this->identity_type = $identity_type;

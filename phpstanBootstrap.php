@@ -21,12 +21,18 @@ declare(strict_types = 1);
 /** @var \PHPStan\DependencyInjection\Container $container */
 /** @phpstan-var array<string> $bootstrapFiles */
 $bootstrapFiles = $container->getParameter('bootstrapFiles');
+$isStandalone = $container->getParameter('isStandalone');
 foreach ($bootstrapFiles as $bootstrapFile) {
   if (str_ends_with($bootstrapFile, 'vendor/autoload.php')) {
     $vendorDir = dirname($bootstrapFile);
     $civiCrmVendorDir = $vendorDir . '/civicrm';
     $civiCrmCoreDir = $civiCrmVendorDir . '/civicrm-core';
     $civiCrmPackagesDir = $civiCrmVendorDir . '/civicrm-packages';
+    if ($isStandalone) {
+      $civiCrmVendorDir = $vendorDir;
+      $civiCrmCoreDir = $civiCrmVendorDir . '/../../core';
+      $civiCrmPackagesDir = $civiCrmCoreDir . '/packages';
+    }
     if (file_exists($civiCrmCoreDir)) {
       set_include_path(get_include_path()
         . PATH_SEPARATOR . $civiCrmCoreDir

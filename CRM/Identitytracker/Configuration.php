@@ -13,6 +13,8 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 /**
  *
  * Configuration wrapper
@@ -20,27 +22,27 @@
  */
 class CRM_Identitytracker_Configuration {
 
-  const GROUP_NAME          = 'contact_id_history';
-  const GROUP_TABLE         = 'civicrm_value_contact_id_history';
-  const TYPE_FIELD_NAME     = 'id_history_entry_type';
-  const TYPE_FIELD_COLUMN   = 'identifier_type';
-  const ID_FIELD_NAME       = 'id_history_entry';
-  const ID_FIELD_COLUMN     = 'identifier';
-  const DATE_FIELD_NAME     = 'id_history_date';
-  const DATE_FIELD_COLUMN   = 'used_since';
-  const CONTEXT_FIELD_NAME = 'id_history_context';
-  const CONTEXT_FIELD_COLUMN = 'context';
+  public const GROUP_NAME          = 'contact_id_history';
+  public const GROUP_TABLE         = 'civicrm_value_contact_id_history';
+  public const TYPE_FIELD_NAME     = 'id_history_entry_type';
+  public const TYPE_FIELD_COLUMN   = 'identifier_type';
+  public const ID_FIELD_NAME       = 'id_history_entry';
+  public const ID_FIELD_COLUMN     = 'identifier';
+  public const DATE_FIELD_NAME     = 'id_history_date';
+  public const DATE_FIELD_COLUMN   = 'used_since';
+  public const CONTEXT_FIELD_NAME = 'id_history_context';
+  public const CONTEXT_FIELD_COLUMN = 'context';
 
   // built-in identities
-  const TYPE_GROUP_NAME     = 'contact_id_history_type';
-  const TYPE_INTERNAL       = 'internal';
-  const TYPE_EXTERNAL       = 'external';
+  public const TYPE_GROUP_NAME     = 'contact_id_history_type';
+  public const TYPE_INTERNAL       = 'internal';
+  public const TYPE_EXTERNAL       = 'external';
 
-  protected $contact_id_history_group  = NULL;
-  protected $contact_id_history_fields = NULL;
-  protected $contact_id_option_group   = NULL;
+  protected ?array $contact_id_history_group  = NULL;
+  protected ?array $contact_id_history_fields = NULL;
+  protected ?array $contact_id_option_group   = NULL;
 
-  protected static $singleton = NULL;
+  protected static ?CRM_Identitytracker_Configuration $singleton = NULL;
 
   protected function __construct() {}
 
@@ -111,6 +113,7 @@ class CRM_Identitytracker_Configuration {
       catch (Exception $e) {
         // that should simply mean that there is no such group
         $this->contact_id_history_group = [];
+        // @ignoreException
       }
     }
 
@@ -133,6 +136,7 @@ class CRM_Identitytracker_Configuration {
       catch (Exception $e) {
         // group doesn't exist
         $this->contact_id_option_group = [];
+        // @ignoreException
       }
     }
 
