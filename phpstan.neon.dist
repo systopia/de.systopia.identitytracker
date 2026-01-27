@@ -1,6 +1,9 @@
 includes:
 	- phpstan-baseline.neon
 
+parametersSchema:
+	isStandalone: bool()
+
 parameters:
 	paths:
 		- api
@@ -52,3 +55,4 @@ parameters:
 		# Note paths are prefixed with "*/" to work with inspections in PHPStorm because of:
 		# https://youtrack.jetbrains.com/issue/WI-63891/PHPStan-ignoreErrors-configuration-isnt-working-with-inspections
 	tmpDir: .phpstan
+	isStandalone: false
