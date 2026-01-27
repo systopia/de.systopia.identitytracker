@@ -77,6 +77,7 @@ class CRM_Identitytracker_Configuration {
     $type_column  = self::TYPE_FIELD_COLUMN;
     $id_column    = self::ID_FIELD_COLUMN;
     $date_column  = self::DATE_FIELD_COLUMN;
+    // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
     // return "INSERT INTO `$group_table` (`entity_id`, `{$type_column}`, `{$id_column}`, `{$date_column}`) VALUES (%1, %2, %3, %4);";
 
     // This statement automatically checks for existing entries.

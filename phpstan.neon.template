@@ -4,7 +4,11 @@
 includes:
 	- phpstan.neon.dist
 
+parametersSchema:
+	isStandalone: bool()
+
 parameters:
+	isStandalone: false
 	scanDirectories:
 		- {VENDOR_DIR}/civicrm/civicrm-core/CRM
 		- {VENDOR_DIR}/civicrm/civicrm-core/api/
@@ -13,9 +17,6 @@ parameters:
 		- {VENDOR_DIR}/autoload.php
 
 # For standalone CiviCRM installations, comment out the above "parameters" section and use the following configuration:
-#
-#parametersSchema:
-#	isStandalone: bool()
 #
 #parameters:
 #	isStandalone: true

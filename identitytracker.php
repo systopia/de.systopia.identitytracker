@@ -20,8 +20,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Implements hook_civicrm_container().
- *
- * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
  */
 function identitytracker_civicrm_container(ContainerBuilder $container) {
   $container->addCompilerPass(new Civi\Identitytracker\CompilerPass());

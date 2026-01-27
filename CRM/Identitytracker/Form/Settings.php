@@ -17,7 +17,6 @@ declare(strict_types = 1);
 
 require_once 'CRM/Core/Form.php';
 
-
 /**
  * Settings form controller
  *
@@ -25,7 +24,7 @@ require_once 'CRM/Core/Form.php';
  */
 class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
 
-  const CUSTOM_FIELD_COUNT = 5;
+  public const CUSTOM_FIELD_COUNT = 5;
 
   private CRM_Identitytracker_Configuration $configuration;
 
@@ -120,6 +119,7 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
 
     $this->configuration->setCustomFieldMapping($mapping);
 
+    // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
     // migrate all (TODO: only changes?)
     foreach ($mapping as $custom_field_id => $identity_type) {
       CRM_Identitytracker_Migration::migrateCustom($identity_type, $custom_field_id);

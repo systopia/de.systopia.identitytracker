@@ -19,11 +19,11 @@
 declare(strict_types = 1);
 
 class CRM_Identitytracker_CustomData {
-  const CUSTOM_DATA_HELPER_VERSION   = '0.10';
-  const CUSTOM_DATA_HELPER_LOG_LEVEL = 0;
-  const CUSTOM_DATA_HELPER_LOG_DEBUG = 1;
-  const CUSTOM_DATA_HELPER_LOG_INFO  = 3;
-  const CUSTOM_DATA_HELPER_LOG_ERROR = 5;
+  public const CUSTOM_DATA_HELPER_VERSION   = '0.10';
+  public const CUSTOM_DATA_HELPER_LOG_LEVEL = 0;
+  public const CUSTOM_DATA_HELPER_LOG_DEBUG = 1;
+  public const CUSTOM_DATA_HELPER_LOG_INFO  = 3;
+  public const CUSTOM_DATA_HELPER_LOG_ERROR = 5;
 
   /**
    * caches custom field data, indexed by group name */
@@ -67,7 +67,7 @@ class CRM_Identitytracker_CustomData {
         // create OptionValue
         $entity = $this->createEntity($data['entity'], $entity_data);
       }
-      elseif ($entity == 'FAILED') {
+      elseif ($entity === 'FAILED') {
         // Couldn't identify:
         $this->log(self::CUSTOM_DATA_HELPER_LOG_ERROR, "Couldn't create/update {$data['entity']}: " . json_encode($entity_data));
       }
@@ -96,7 +96,7 @@ class CRM_Identitytracker_CustomData {
       // create OptionGroup
       $optionGroup = $this->createEntity('OptionGroup', $data);
     }
-    elseif ($optionGroup == 'FAILED') {
+    elseif ($optionGroup === 'FAILED') {
       // Couldn't identify:
       $this->log(self::CUSTOM_DATA_HELPER_LOG_ERROR, "Couldn't create/update OptionGroup: " . json_encode($data));
       return;
@@ -117,7 +117,7 @@ class CRM_Identitytracker_CustomData {
         // create OptionValue
         $optionValue = $this->createEntity('OptionValue', $optionValueSpec);
       }
-      elseif ($optionValue == 'FAILED') {
+      elseif ($optionValue === 'FAILED') {
         // Couldn't identify:
         $this->log(self::CUSTOM_DATA_HELPER_LOG_ERROR, "Couldn't create/update OptionValue: " . json_encode($optionValueSpec));
       }
@@ -133,6 +133,7 @@ class CRM_Identitytracker_CustomData {
    * CustomGroup/CustomField data in the system with
    * those specs
    */
+  // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
   public function syncCustomGroup($source_file) {
     $force_update = FALSE;
     $data = json_decode(file_get_contents($source_file), TRUE);
@@ -144,7 +145,7 @@ class CRM_Identitytracker_CustomData {
     if (isset($data['extends_entity_column_value'])) {
       // this doesn't get returned by the API, so differences couldn't be detected
       $force_update = TRUE;
-      if ($data['extends'] == 'Activity') {
+      if ($data['extends'] === 'Activity') {
         $extends_list = [];
         foreach ($data['extends_entity_column_value'] as $activity_type) {
           if (!is_numeric($activity_type)) {
@@ -169,7 +170,7 @@ class CRM_Identitytracker_CustomData {
       // create CustomGroup
       $customGroup = $this->createEntity('CustomGroup', $data);
     }
-    elseif ($customGroup == 'FAILED') {
+    elseif ($customGroup === 'FAILED') {
       // Couldn't identify:
       $this->log(self::CUSTOM_DATA_HELPER_LOG_ERROR, "Couldn't create/update CustomGroup: " . json_encode($data));
       return;
@@ -187,7 +188,7 @@ class CRM_Identitytracker_CustomData {
       if (!empty($customFieldSpec['option_group_id']) && !is_numeric($customFieldSpec['option_group_id'])) {
         // look up custom group id
         $optionGroup = $this->getEntityID('OptionGroup', ['name' => $customFieldSpec['option_group_id']]);
-        if ($optionGroup == 'FAILED' || $optionGroup == NULL) {
+        if ($optionGroup === 'FAILED' || $optionGroup === NULL) {
           $this->log(self::CUSTOM_DATA_HELPER_LOG_ERROR, "Couldn't create/update CustomField, bad option_group: {$customFieldSpec['option_group_id']}");
           return;
         }
@@ -198,7 +199,7 @@ class CRM_Identitytracker_CustomData {
         // create CustomField
         $customField = $this->createEntity('CustomField', $customFieldSpec);
       }
-      elseif ($customField == 'FAILED') {
+      elseif ($customField === 'FAILED') {
         // Couldn't identify:
         $this->log(self::CUSTOM_DATA_HELPER_LOG_ERROR, "Couldn't create/update CustomField: " . json_encode($customFieldSpec));
       }
@@ -274,7 +275,7 @@ class CRM_Identitytracker_CustomData {
   protected function createEntity($entity_type, $data) {
     // first: strip fields starting with '_'
     foreach (array_keys($data) as $field) {
-      if (substr($field, 0, 1) == '_') {
+      if (str_starts_with($field, '_')) {
         unset($data[$field]);
       }
     }
@@ -287,13 +288,14 @@ class CRM_Identitytracker_CustomData {
   /**
    * create a new entity
    */
+  // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
   protected function updateEntity($entity_type, $requested_data, $current_data, $required_fields = [], $force = FALSE) {
     $update_query = [];
 
     // first: identify fields that need to be updated
     foreach ($requested_data as $field => $value) {
       // fields starting with '_' are ignored
-      if (substr($field, 0, 1) == '_') {
+      if (str_starts_with($field, '_')) {
         continue;
       }
 
@@ -470,7 +472,7 @@ class CRM_Identitytracker_CustomData {
     $customgroups_used = [];
     foreach ($data as $key => $value) {
       if (preg_match('/^(?P<group_name>\w+)[.](?P<field_name>\w+)$/', $key, $match)) {
-        if ($match['group_name'] == 'option' || $match['group_name'] == 'options') {
+        if ($match['group_name'] === 'option' || $match['group_name'] === 'options') {
           // exclude API options
           continue;
         }
@@ -496,6 +498,7 @@ class CRM_Identitytracker_CustomData {
           }
           // phpcs:ignore
           else {
+            // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
             // TODO: unknown data field $match['group_name'] . $match['field_name']
           }
         }
@@ -690,7 +693,7 @@ class CRM_Identitytracker_CustomData {
     foreach ($params as $key => &$value) {
       if (!is_array($value)) {
         $first_character = substr($value, 0, 1);
-        if ($first_character == '[' || $first_character == '{') {
+        if ($first_character === '[' || $first_character === '{') {
           $unpacked_value = json_decode($value, TRUE);
           if ($unpacked_value) {
             if (is_array($unpacked_value) && empty($unpacked_value)) {

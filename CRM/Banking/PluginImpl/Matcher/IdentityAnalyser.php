@@ -29,6 +29,7 @@ class CRM_Banking_PluginImpl_Matcher_IdentityAnalyser extends CRM_Banking_Plugin
     // read config, set defaults
     $config = $this->_plugin_config;
     if (!isset($config->fields)) {
+      // phpcs:disable
       $config->fields = [
         'contact_id' => [
       // default is: same field (in-place)
@@ -41,6 +42,7 @@ class CRM_Banking_PluginImpl_Matcher_IdentityAnalyser extends CRM_Banking_Plugin
           'if_not_found'     => 'reset',
         ],
       ];
+      // phpcs:enable
     }
   }
 
