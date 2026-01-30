@@ -70,11 +70,9 @@ class CRM_Identitytracker_Upgrader extends CRM_Extension_Upgrader_Base {
    * Make sure the new XCM matchers are available
    *
    * @return TRUE on success
-   * @throws Exception
    */
   public function upgrade_1301() {
-    $this->ctx->log->info('Installing XCM matchers.');
-    $this->enable();
+    // XCM matchers are now managed entities.
     return TRUE;
   }
 
