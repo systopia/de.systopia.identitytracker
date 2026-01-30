@@ -373,12 +373,6 @@ parameters:
 			path: CRM/Xcm/Matcher/IdTrackerMatcher.php
 
 		-
-			message: '#^Method Civi\\Identitytracker\\CompilerPass\:\:process\(\) has no return type specified\.$#'
-			identifier: missingType.return
-			count: 1
-			path: Civi/Identitytracker/CompilerPass.php
-
-		-
 			message: '#^Construct empty\(\) is not allowed\. Use more strict comparison\.$#'
 			identifier: empty.notAllowed
 			count: 1

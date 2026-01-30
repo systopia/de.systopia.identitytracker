@@ -15,3 +15,6 @@ parameters:
 
 		# Required with symfony/event-dispatcher <4.4.27
 		- '#::getSubscribedEvents\(\) return type has no value type specified in iterable type array.$#'
+
+		# Required with symfony/dependency-injection <6.3.0
+		- '#^Method Civi\\Identitytracker\\CompilerPass\:\:process\(\) has no return type specified\.$#'

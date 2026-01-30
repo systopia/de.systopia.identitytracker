@@ -13,6 +13,9 @@ use CRM_Identitytracker_ExtensionUtil as E;
  */
 class CompilerPass implements CompilerPassInterface {
 
+  /**
+   * @inheritDoc
+   */
   public function process(ContainerBuilder $container) {
     if ($container->hasDefinition('action_provider')) {
       $actionProviderDefinition = $container->getDefinition('action_provider');
