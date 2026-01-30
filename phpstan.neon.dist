@@ -16,7 +16,6 @@ parameters:
 	excludePaths:
 		analyse:
 			- CRM/Identitytracker/DAO/*
-			- CRM/Identitytracker/CustomData.php
 			- tests/phpunit/bootstrap.php
 	scanFiles:
 		- identitytracker.civix.php
