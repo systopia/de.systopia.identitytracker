@@ -26,10 +26,6 @@ class CRM_Identitytracker_Upgrader extends CRM_Extension_Upgrader_Base {
    * Extension is enabled
    */
   public function enable(): void {
-    // Add XCM matchers
-    $customData = new CRM_Identitytracker_CustomData(E::LONG_NAME);
-    $customData->syncOptionGroup(E::path('/resources/rules_option_group.json'));
-
     // register the IndentiyAnalyser if CiviBanking is installed
     CRM_Identitytracker_Configuration::registerIdentityAnalyser();
   }
