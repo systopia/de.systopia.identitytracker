@@ -13,8 +13,9 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
-require_once 'CRM/Core/Form.php';
+declare(strict_types = 1);
 
+require_once 'CRM/Core/Form.php';
 
 /**
  * Settings form controller
@@ -23,66 +24,73 @@ require_once 'CRM/Core/Form.php';
  */
 class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
 
-  const CUSTOM_FIELD_COUNT = 5;
+  public const CUSTOM_FIELD_COUNT = 5;
 
+  private CRM_Identitytracker_Configuration $configuration;
+
+  public function __construct($state = NULL, $action = CRM_Core_Action::NONE, $method = 'post', $name = NULL) {
+    parent::__construct($state, $action, $method, $name);
+    $configuration = CRM_Identitytracker_Configuration::instance();
+    if ($configuration === NULL) {
+      throw new RuntimeException('Configuration not found!');
+    }
+    $this->configuration = $configuration;
+  }
 
   public function buildQuickForm() {
 
     // find all eligible custom fields
-    $custom_fields = array(0 => ts('-- select --', array('domain' => 'de.systopia.identitytracker')));
+    $custom_fields = [0 => ts('-- select --', ['domain' => 'de.systopia.identitytracker'])];
     $custom_fields += $this->getEligibleCustomFields();
 
     if (count($custom_fields) <= 1) {
-      CRM_Core_Session::setStatus(ts("No suitable custom fields found!", array('domain' => 'de.systopia.identitytracker')), ts("Warning", array('domain' => 'de.systopia.identitytracker')), 'warn');
+      CRM_Core_Session::setStatus(ts('No suitable custom fields found!', ['domain' => 'de.systopia.identitytracker']), ts('Warning', ['domain' => 'de.systopia.identitytracker']), 'warn');
     }
 
     // get identity types
-    $identity_types = array(0 => ts('-- select --', array('domain' => 'de.systopia.identitytracker')));
+    $identity_types = [0 => ts('-- select --', ['domain' => 'de.systopia.identitytracker'])];
     $identity_types += $this->getIdentityTypes();
 
     // add elements
-    $config_rows = array();
-    for ($i=1; $i <= self::CUSTOM_FIELD_COUNT; $i++) {
+    $config_rows = [];
+    for ($i = 1; $i <= self::CUSTOM_FIELD_COUNT; $i++) {
       $this->addElement('select',
                         "custom_field_$i",
-                        ts('Custom Field', array('domain' => 'de.systopia.identitytracker')),
+                        ts('Custom Field', ['domain' => 'de.systopia.identitytracker']),
                         $custom_fields,
-                        array('class' => 'crm-select2'));
+                        ['class' => 'crm-select2']);
 
       $this->addElement('select',
                         "identity_type_$i",
-                        ts('Identity Type', array('domain' => 'de.systopia.identitytracker')),
+                        ts('Identity Type', ['domain' => 'de.systopia.identitytracker']),
                         $identity_types,
-                        array('class' => 'crm-select2'));
+                        ['class' => 'crm-select2']);
 
       $config_rows["custom_field_$i"] = "identity_type_$i";
     }
     $this->assign('config_rows', $config_rows);
 
     // add a link to the custom group
-    $configuration = CRM_Identitytracker_Configuration::instance();
-    $group_id = $configuration->getOptionGroupID();
+    $group_id = $this->configuration->getOptionGroupID();
     $option_group_url = CRM_Utils_System::url('civicrm/admin/options', "reset=1&gid={$group_id}");
     $this->assign('option_group_url', $option_group_url);
 
     // add the save button
-    $this->addButtons(array(
-      array(
+    $this->addButtons([
+      [
         'type' => 'submit',
         'name' => ts('Save'),
         'isDefault' => TRUE,
-      )
-    ));
+      ],
+    ]);
 
     parent::buildQuickForm();
   }
 
-
-  public function setDefaultValues() {
+  public function setDefaultValues(): array {
     $defaults = parent::setDefaultValues();
 
-    $configuration = CRM_Identitytracker_Configuration::instance();
-    $mapping = $configuration->getCustomFieldMapping();
+    $mapping = $this->configuration->getCustomFieldMapping();
 
     if ($mapping) {
       $i = 0;
@@ -96,13 +104,12 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
     return $defaults;
   }
 
-
   public function postProcess() {
     $values = $this->exportValues();
 
     // store
-    $mapping = array();
-    for ($i=0; $i <= self::CUSTOM_FIELD_COUNT; $i++) {
+    $mapping = [];
+    for ($i = 0; $i <= self::CUSTOM_FIELD_COUNT; $i++) {
       $custom_field  = $values["custom_field_$i"] ?? NULL;
       $identity_type = $values["identity_type_$i"] ?? NULL;
       if (!empty($custom_field) && !empty($identity_type)) {
@@ -110,9 +117,9 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
       }
     }
 
-    $configuration = CRM_Identitytracker_Configuration::instance();
-    $configuration->setCustomFieldMapping($mapping);
+    $this->configuration->setCustomFieldMapping($mapping);
 
+    // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
     // migrate all (TODO: only changes?)
     foreach ($mapping as $custom_field_id => $identity_type) {
       CRM_Identitytracker_Migration::migrateCustom($identity_type, $custom_field_id);
@@ -121,15 +128,16 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
     parent::postProcess();
   }
 
-
   /**
    * get the list of identity types
    */
-  protected function getIdentityTypes() {
-    $identity_types_query = civicrm_api3('OptionValue', 'get', array(
+  protected function getIdentityTypes(): array {
+    $identity_types = [];
+    $identity_types_query = civicrm_api3('OptionValue', 'get', [
       'option_group_id' => 'contact_id_history_type',
       'return'          => 'value,label',
-      'option.limit'    => 0));
+      'option.limit'    => 0,
+    ]);
     foreach ($identity_types_query['values'] as $identity_type) {
       $identity_types[$identity_type['value']] = $identity_type['label'];
     }
@@ -141,35 +149,39 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
    */
   protected function getEligibleCustomFields() {
     // FIRST: find all contact types:
-    $contact_types = array('Contact');
-    $contact_types_query = civicrm_api3('ContactType', 'get', array(
+    $contact_types = ['Contact'];
+    $contact_types_query = civicrm_api3('ContactType', 'get', [
       'return'        => 'name',
-      'option.limit'  => 0));
+      'option.limit'  => 0,
+    ]);
     foreach ($contact_types_query['values'] as $contact_type) {
       $contact_types[] = $contact_type['name'];
     }
 
     // THEN: find all custom groups extending these
-    $custom_groups_query = civicrm_api3('CustomGroup', 'get', array(
+    $custom_groups_query = civicrm_api3('CustomGroup', 'get', [
       'return'        => 'id',
-      'extends'       => array('IN' => $contact_types),
-      'option.limit'  => 0));
+      'extends'       => ['IN' => $contact_types],
+      'option.limit'  => 0,
+    ]);
+    $custom_groups = [];
     foreach ($custom_groups_query['values'] as $custom_group) {
       $custom_groups[] = $custom_group['id'];
     }
 
     // THEN: find all custom fields of these groups
-    $custom_fields_query = civicrm_api3('CustomField', 'get', array(
+    $custom_fields_query = civicrm_api3('CustomField', 'get', [
       'return'          => 'id,label',
-      'custom_group_id' => array('IN' => $custom_groups),
-      'option.limit'    => 0));
+      'custom_group_id' => ['IN' => $custom_groups],
+      'option.limit'    => 0,
+    ]);
+    $custom_fields = [];
     foreach ($custom_fields_query['values'] as $custom_field) {
       $custom_fields[$custom_field['id']] = $custom_field['label'];
     }
 
     // remove our own fields
-    $configuration = CRM_Identitytracker_Configuration::instance();
-    $own_fields = $configuration->getIdentitytrackerFields();
+    $own_fields = $this->configuration->getIdentitytrackerFields();
     foreach ($own_fields as $own_field) {
       $own_field_id = $own_field['id'];
       if (isset($custom_fields[$own_field_id])) {
@@ -179,4 +191,5 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
 
     return $custom_fields;
   }
+
 }

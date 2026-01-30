@@ -1,7 +1,8 @@
 site_name: Contact Identity Tracker
+site_description: The sole purpose of this extension is to keep a history of contact ID and external identfier that would otherwise be destroyed when merging duplicates
+site_author: SYSTOPIA
 repo_url: https://github.com/systopia/de.systopia.identitytracker
-site_description: 'A guide for the Contact Identity Tracker extension.'
-site_author: 'systopia'
+
 theme:
   name: material
 
@@ -15,7 +16,7 @@ markdown_extensions:
   - def_list
   - codehilite
   - toc:
-      permalink: True
+      permalink: true
   - pymdownx.superfences
   - pymdownx.inlinehilite
   - pymdownx.tilde

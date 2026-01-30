@@ -1,7 +1,9 @@
 <?php
+
+declare(strict_types = 1);
+
 namespace Civi\Identitytracker;
 
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use CRM_Identitytracker_ExtensionUtil as E;
@@ -11,6 +13,9 @@ use CRM_Identitytracker_ExtensionUtil as E;
  */
 class CompilerPass implements CompilerPassInterface {
 
+  /**
+   * @inheritDoc
+   */
   public function process(ContainerBuilder $container) {
     if ($container->hasDefinition('action_provider')) {
       $actionProviderDefinition = $container->getDefinition('action_provider');
@@ -18,4 +23,5 @@ class CompilerPass implements CompilerPassInterface {
         ['CreateIdentifier', 'Civi\Identitytracker\Actions\CreateIdentifier', E::ts('Create Contact Identity'), []]);
     }
   }
+
 }

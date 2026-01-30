@@ -13,17 +13,21 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 /**
  * Find ONE contact based on the contact history
  */
 function civicrm_api3_contact_identify($params) {
   $result = civicrm_api3('Contact', 'findbyidentity', $params);
   if (empty($result['values'])) {
-    throw new Exception("No contacts found.", 1);
-  } elseif (count($result['values']) == 1) {
+    throw new Exception('No contacts found.', 1);
+  }
+  elseif (count($result['values']) == 1) {
     return $result;
-  } else {
-    throw new Exception("More than one contact found.", 1);
+  }
+  else {
+    throw new \RuntimeException('More than one contact found.', 1);
   }
 }
 

@@ -13,13 +13,13 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 require_once 'identitytracker.civix.php';
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Implements hook_civicrm_container().
- *
- * @param ContainerBuilder $container
  */
 function identitytracker_civicrm_container(ContainerBuilder $container) {
   $container->addCompilerPass(new Civi\Identitytracker\CompilerPass());
@@ -28,33 +28,33 @@ function identitytracker_civicrm_container(ContainerBuilder $container) {
 /**
  * implement this hook to make sure we capture all ID changes
  */
-function identitytracker_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
-  if ($op == 'edit' || $op == 'create' || $op == 'update') {
-    if ($objectName == 'Individual' || $objectName == 'Organization' || $objectName == 'Household') {
-      if (!empty($objectRef->external_identifier) && ($objectRef->external_identifier != 'null')) {
-        $exists = CRM_Core_DAO::singleValueQuery(CRM_Identitytracker_Configuration::getLookupSQL(), array(
-          1 => array($objectId, 'Integer'),
-          2 => array(CRM_Identitytracker_Configuration::TYPE_EXTERNAL, 'String'),
-          3 => array($objectRef->external_identifier, 'String'),
-          ));
-        if (!$exists) {
-          CRM_Core_DAO::executeQuery(CRM_Identitytracker_Configuration::getInsertSQL(), array(
-            1 => array($objectId, 'Integer'),
-            2 => array(CRM_Identitytracker_Configuration::TYPE_EXTERNAL, 'String'),
-            3 => array($objectRef->external_identifier, 'String'),
-            4 => array(date('YmdHis'), 'String'),
-          ));
+function identitytracker_civicrm_post($op, $objectName, $objectId, &$objectRef): void {
+  if ($op === 'edit' || $op === 'create' || $op === 'update') {
+    if (in_array($objectName, ['Individual', 'Organization', 'Household'], TRUE)) {
+      if (!empty($objectRef->external_identifier) && ($objectRef->external_identifier !== 'null')) {
+        $exists = CRM_Core_DAO::singleValueQuery(CRM_Identitytracker_Configuration::getLookupSQL(), [
+          1 => [$objectId, 'Integer'],
+          2 => [CRM_Identitytracker_Configuration::TYPE_EXTERNAL, 'String'],
+          3 => [$objectRef->external_identifier, 'String'],
+        ]);
+        if ($exists === NULL || $exists === '') {
+          CRM_Core_DAO::executeQuery(CRM_Identitytracker_Configuration::getInsertSQL(), [
+            1 => [$objectId, 'Integer'],
+            2 => [CRM_Identitytracker_Configuration::TYPE_EXTERNAL, 'String'],
+            3 => [$objectRef->external_identifier, 'String'],
+            4 => [date('YmdHis'), 'String'],
+          ]);
         }
       }
 
-      if ($op == 'create') {
+      if ($op === 'create') {
         // copy contact's CiviCRM ID once upon creation
-        CRM_Core_DAO::executeQuery(CRM_Identitytracker_Configuration::getInsertSQL(), array(
-          1 => array($objectId, 'Integer'),
-          2 => array(CRM_Identitytracker_Configuration::TYPE_INTERNAL, 'String'),
-          3 => array($objectId, 'String'),
-          4 => array(date('YmdHis'), 'String'),
-        ));
+        CRM_Core_DAO::executeQuery(CRM_Identitytracker_Configuration::getInsertSQL(), [
+          1 => [$objectId, 'Integer'],
+          2 => [CRM_Identitytracker_Configuration::TYPE_INTERNAL, 'String'],
+          3 => [$objectId, 'String'],
+          4 => [date('YmdHis'), 'String'],
+        ]);
 
       }
     }
@@ -66,10 +66,11 @@ function identitytracker_civicrm_post( $op, $objectName, $objectId, &$objectRef 
  *  make sure we copy the value into the identity table
  */
 function identitytracker_civicrm_custom($op, $groupID, $entityID, &$params) {
-  if ( $op != 'create' && $op != 'edit' ) {
+  if ($op !== 'create' && $op !== 'edit') {
     return;
   }
 
+  /** @var CRM_Identitytracker_Configuration $configuration */
   $configuration = CRM_Identitytracker_Configuration::instance();
   $mapping = $configuration->getCustomFieldMapping();
   foreach ($params as $write) {
@@ -77,11 +78,11 @@ function identitytracker_civicrm_custom($op, $groupID, $entityID, &$params) {
       // HIT! This is an identity field!
       $identity_type = $mapping[$write['custom_field_id']];
       if (!empty($write['value'])) {
-        civicrm_api3('Contact', 'addidentity', array(
+        civicrm_api3('Contact', 'addidentity', [
           'contact_id' => $entityID,
           'identifier_type' => $identity_type,
           'identifier' => $write['value'],
-          ));
+        ]);
       }
     }
   }
@@ -99,7 +100,7 @@ function identitytracker_civicrm_enable() {
  * Set permission to the API calls
  */
 function identitytracker_civicrm_alterAPIPermissions($entity, $action, &$params, &$permissions) {
-  $permissions['contact']['findbyhistory'] = array('view all contacts');
+  $permissions['contact']['findbyhistory'] = ['view all contacts'];
 }
 
 /**
@@ -108,14 +109,14 @@ function identitytracker_civicrm_alterAPIPermissions($entity, $action, &$params,
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_navigationMenu
  */
 function identitytracker_civicrm_navigationMenu(&$menu) {
-  _identitytracker_civix_insert_navigation_menu($menu, 'Administer/System Settings', array(
+  _identitytracker_civix_insert_navigation_menu($menu, 'Administer/System Settings', [
     'label' => ts('Identity Tracker Settings'),
     'name' => 'Identity Tracker Settings',
     'url' => 'civicrm/admin/setting/idtracker',
     'permission' => 'administer CiviCRM',
     'operator' => 'OR',
     'separator' => 0,
-  ));
+  ]);
   _identitytracker_civix_navigationMenu($menu);
 }
 

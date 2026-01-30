@@ -13,8 +13,12 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
-/*
+declare(strict_types = 1);
+
+/**
+ *
  * This class can migrate existing contacts's IDs into the newly created tables
+ *
  */
 class CRM_Identitytracker_Migration {
 
@@ -30,13 +34,15 @@ class CRM_Identitytracker_Migration {
    * will migrate civicrm_contact base data
    */
   protected static function migrate($type, $contact_field) {
-    $install_date = CRM_Core_DAO::singleValueQuery("SELECT MIN(`created_date`) FROM `civicrm_contact`;");
+    $install_date = CRM_Core_DAO::singleValueQuery('SELECT MIN(`created_date`) FROM `civicrm_contact`;');
     $group_table  = CRM_Identitytracker_Configuration::GROUP_TABLE;
     $type_column  = CRM_Identitytracker_Configuration::TYPE_FIELD_COLUMN;
     $id_column    = CRM_Identitytracker_Configuration::ID_FIELD_COLUMN;
     $date_column  = CRM_Identitytracker_Configuration::DATE_FIELD_COLUMN;
 
-    if (empty($install_date)) return;
+    if (empty($install_date)) {
+      return;
+    }
 
     CRM_Core_DAO::executeQuery("
       INSERT INTO `$group_table` (`entity_id`, `{$type_column}`, `{$id_column}`, `{$date_column}`)
@@ -51,10 +57,10 @@ class CRM_Identitytracker_Migration {
                                WHERE `entity_id` = `civicrm_contact`.`id`
                                  AND `{$type_column}` = %1
                                  AND `{$id_column}` = `civicrm_contact`.`{$contact_field}`)
-        );", array(
-            1 => array($type, 'String'),
-            2 => array($install_date, 'String'),
-        ));
+        );", [
+          1 => [$type, 'String'],
+          2 => [$install_date, 'String'],
+        ]);
   }
 
   /**
@@ -67,8 +73,8 @@ class CRM_Identitytracker_Migration {
     $date_column  = CRM_Identitytracker_Configuration::DATE_FIELD_COLUMN;
 
     // get custom field data
-    $custom_field = civicrm_api3('CustomField', 'getsingle', array('id' => $custom_field_id));
-    $custom_group = civicrm_api3('CustomGroup', 'getsingle', array('id' => $custom_field['custom_group_id']));
+    $custom_field = civicrm_api3('CustomField', 'getsingle', ['id' => $custom_field_id]);
+    $custom_group = civicrm_api3('CustomGroup', 'getsingle', ['id' => $custom_field['custom_group_id']]);
     $custom_field_column = $custom_field['column_name'];
     $custom_group_table  = $custom_group['table_name'];
 
@@ -85,8 +91,9 @@ class CRM_Identitytracker_Migration {
                                WHERE `{$group_table}`.`entity_id` = `{$custom_group_table}`.`entity_id`
                                  AND `{$type_column}` = %1
                                  AND `{$id_column}` = `{$custom_group_table}`.`{$custom_field_column}`)
-        );", array(
-            1 => array($identity_type, 'String'),
-        ));
+        );", [
+          1 => [$identity_type, 'String'],
+        ]);
   }
+
 }
