@@ -112,6 +112,7 @@ jobs:
         export CV_CONFIG="$HOME/.cv.json"
         cv vars:fill --quiet
         sed -i "s#\"TEST_DB_DSN\": \".*\"#\"TEST_DB_DSN\": \"$DATABASE_URL\"#g" "$CV_CONFIG"
+        cv en civi_contribute
 
         cv ext:download "action-provider@https://lab.civicrm.org/extensions/action-provider/-/archive/1.195/action-provider-1.195.zip"
         cv ext:download "org.project60.banking@https://github.com/Project60/org.project60.banking/releases/download/1.4.1/org.project60.banking-1.4.1.zip"
