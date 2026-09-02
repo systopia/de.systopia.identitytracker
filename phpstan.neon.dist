@@ -1,10 +1,19 @@
 includes:
 	- phpstan-baseline.neon
 
-parametersSchema:
-	isStandalone: bool()
-
 parameters:
+	civicrm:
+		# The class \CRM_Core_Smarty provides various methods. Methods that are
+		# not explicitly defined are delegated to the actual Smarty object via
+		# __call(). In many cases explicit methods like fetchWith() (or
+		# \CRM_Utils_String::parseOneOffStringThroughSmarty()) should be enough.
+		# Though if one of the implicit methods is used, this option has to be
+		# enabled.
+		implicitSmartyMethodsUsed: false
+		optionalExtensions:
+			- action-provider
+			- de.systopia.xcm
+			- org.project60.banking
 	paths:
 		- api
 		- Civi
@@ -23,9 +32,6 @@ parameters:
 	scanDirectories:
 		- tools/phpunit/vendor/bin/.phpunit/phpunit/src/Framework
 		- mixin
-		- ../action-provider/Civi
-		- ../de.systopia.xcm/CRM
-		- ../org.project60.banking/CRM
 	bootstrapFiles:
 		- tools/phpunit/vendor/bin/.phpunit/phpunit/vendor/autoload.php
 		- phpstanBootstrap.php
@@ -34,9 +40,13 @@ parameters:
 		- Civi\Core\Event\GenericHookEvent
 		- CRM_Core_Config
 		- CRM_Core_DAO
+		- civicrm_api3
 	earlyTerminatingMethodCalls:
+		CRM_Core_Error:
+			- statusBounce
 		CRM_Utils_System:
 			- civiExit
+			- redirect
 		CRM_Queue_Runner:
 			- runAllViaWeb
 	checkTooWideReturnTypesInProtectedAndPublicMethods: true
@@ -54,4 +64,10 @@ parameters:
 		# Note paths are prefixed with "*/" to work with inspections in PHPStorm because of:
 		# https://youtrack.jetbrains.com/issue/WI-63891/PHPStan-ignoreErrors-configuration-isnt-working-with-inspections
 	tmpDir: .phpstan
-	isStandalone: false
+
+parametersSchema:
+	civicrm: structure([
+		implicitSmartyMethodsUsed: bool()
+		# Optional extensions (i.e. not required in info.xml) that should be added to class loader.
+		?optionalExtensions: listOf(string())
+	])

@@ -96,7 +96,10 @@ class CRM_Banking_PluginImpl_Matcher_IdentityAnalyser extends CRM_Banking_Plugin
         if ($result['count'] == 1) {
           # FOUND IT
           if ($data_parsed[$target] != $result['id']) {
-            $this->logMessage("{$identity_type} ID '{$data_parsed[$field]}' ({$field}) resolved to '{$result['id']}'.", 'debug');
+            $this->logMessage(
+              "{$identity_type} ID '{$data_parsed[$field]}' ({$field}) resolved to '{$result['id']}'.",
+              'debug'
+            );
             $data_parsed[$target] = $result['id'];
           }
           else {
