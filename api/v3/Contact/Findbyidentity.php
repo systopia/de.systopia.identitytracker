@@ -29,13 +29,25 @@ function civicrm_api3_contact_findbyidentity($params) {
       /** @phpstan-ignore argument.type */
       ['custom_contact_id_history.entity_id', '=', 'id']
     )
-    ->addWhere('custom_contact_id_history.' . CRM_Identitytracker_Configuration::TYPE_FIELD_NAME, '=', $params['identifier_type'])
-    ->addWhere('custom_contact_id_history.' . CRM_Identitytracker_Configuration::ID_FIELD_NAME, '=', $params['identifier'])
+    ->addWhere(
+      'custom_contact_id_history.' . CRM_Identitytracker_Configuration::TYPE_FIELD_NAME,
+      '=',
+      $params['identifier_type']
+    )
+    ->addWhere(
+      'custom_contact_id_history.' . CRM_Identitytracker_Configuration::ID_FIELD_NAME,
+      '=',
+      $params['identifier']
+    )
     ->addWhere('is_deleted', '=', FALSE)
     ->addGroupBy('id');
 
   if (isset($params['context'])) {
-    $query->addWhere('custom_contact_id_history.' . CRM_Identitytracker_Configuration::CONTEXT_FIELD_NAME, '=', $params['context']);
+    $query->addWhere(
+      'custom_contact_id_history.' . CRM_Identitytracker_Configuration::CONTEXT_FIELD_NAME,
+      '=',
+      $params['context']
+    );
   }
 
   $results = $query

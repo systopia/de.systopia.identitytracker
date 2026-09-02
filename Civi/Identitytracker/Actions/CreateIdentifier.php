@@ -37,7 +37,12 @@ class CreateIdentifier extends AbstractAction {
    */
   public function getConfigurationSpecification() {
     $specs = new SpecificationBag();
-    $specs->addSpecification(new OptionGroupSpecification('identifier_type', 'contact_id_history_type', E::ts('Contact Identity Type'), TRUE));
+    $specs->addSpecification(new OptionGroupSpecification(
+      'identifier_type',
+      'contact_id_history_type',
+      E::ts('Contact Identity Type'),
+      TRUE
+    ));
     return $specs;
   }
 
@@ -58,7 +63,11 @@ class CreateIdentifier extends AbstractAction {
       ]);
     }
     catch (\CRM_Core_Exception $ex) {
-      throw new ExecutionException(E::ts('Error in API Contact addidentity with message: ') . $ex->getMessage(), 0, $ex);
+      throw new ExecutionException(
+        E::ts('Error in API Contact addidentity with message: ') . $ex->getMessage(),
+        0,
+        $ex
+      );
     }
   }
 

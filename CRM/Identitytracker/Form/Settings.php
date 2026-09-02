@@ -15,7 +15,7 @@
 
 declare(strict_types = 1);
 
-require_once 'CRM/Core/Form.php';
+use CRM_Identitytracker_ExtensionUtil as E;
 
 /**
  * Settings form controller
@@ -40,15 +40,19 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
   public function buildQuickForm() {
 
     // find all eligible custom fields
-    $custom_fields = [0 => ts('-- select --', ['domain' => 'de.systopia.identitytracker'])];
+    $custom_fields = [0 => E::ts('-- select --')];
     $custom_fields += $this->getEligibleCustomFields();
 
     if (count($custom_fields) <= 1) {
-      CRM_Core_Session::setStatus(ts('No suitable custom fields found!', ['domain' => 'de.systopia.identitytracker']), ts('Warning', ['domain' => 'de.systopia.identitytracker']), 'warn');
+      CRM_Core_Session::setStatus(
+        E::ts('No suitable custom fields found!'),
+        E::ts('Warning'),
+        'warn'
+      );
     }
 
     // get identity types
-    $identity_types = [0 => ts('-- select --', ['domain' => 'de.systopia.identitytracker'])];
+    $identity_types = [0 => E::ts('-- select --')];
     $identity_types += $this->getIdentityTypes();
 
     // add elements
@@ -56,13 +60,13 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
     for ($i = 1; $i <= self::CUSTOM_FIELD_COUNT; $i++) {
       $this->addElement('select',
                         "custom_field_$i",
-                        ts('Custom Field', ['domain' => 'de.systopia.identitytracker']),
+                        E::ts('Custom Field'),
                         $custom_fields,
                         ['class' => 'crm-select2']);
 
       $this->addElement('select',
                         "identity_type_$i",
-                        ts('Identity Type', ['domain' => 'de.systopia.identitytracker']),
+                        E::ts('Identity Type'),
                         $identity_types,
                         ['class' => 'crm-select2']);
 
@@ -79,7 +83,7 @@ class CRM_Identitytracker_Form_Settings extends CRM_Core_Form {
     $this->addButtons([
       [
         'type' => 'submit',
-        'name' => ts('Save'),
+        'name' => E::ts('Save'),
         'isDefault' => TRUE,
       ],
     ]);

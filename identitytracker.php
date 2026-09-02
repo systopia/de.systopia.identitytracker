@@ -15,7 +15,10 @@
 
 declare(strict_types = 1);
 
+// phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 require_once 'identitytracker.civix.php';
+// phpcs:enable
+
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**

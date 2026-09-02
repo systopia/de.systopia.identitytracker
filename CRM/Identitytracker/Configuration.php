@@ -69,7 +69,8 @@ class CRM_Identitytracker_Configuration {
     $group_table  = self::GROUP_TABLE;
     $type_column  = self::TYPE_FIELD_COLUMN;
     $id_column    = self::ID_FIELD_COLUMN;
-    return "SELECT COUNT(id) FROM `{$group_table}` WHERE `entity_id` = %1 AND `{$type_column}` = %2 AND `{$id_column}` = %3;";
+    return "SELECT COUNT(id) FROM `{$group_table}`
+                 WHERE `entity_id` = %1 AND `{$type_column}` = %2 AND `{$id_column}` = %3;";
   }
 
   public static function getInsertSQL() {
@@ -77,7 +78,7 @@ class CRM_Identitytracker_Configuration {
     $type_column  = self::TYPE_FIELD_COLUMN;
     $id_column    = self::ID_FIELD_COLUMN;
     $date_column  = self::DATE_FIELD_COLUMN;
-    // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
+    // phpcs:ignore Squiz.PHP.CommentedOutCode.Found, Generic.Files.LineLength.TooLong
     // return "INSERT INTO `$group_table` (`entity_id`, `{$type_column}`, `{$id_column}`, `{$date_column}`) VALUES (%1, %2, %3, %4);";
 
     // This statement automatically checks for existing entries.
