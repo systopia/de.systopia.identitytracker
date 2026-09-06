@@ -179,7 +179,7 @@ class CRM_Identitytracker_Configuration {
    * @return array
    */
   public function getCustomFieldMapping() {
-    $mapping = CRM_Core_BAO_Setting::getItem('de.systopia.identitytracker', 'identitytracker_mapping');
+    $mapping = Civi::settings()->get('identitytracker_mapping');
     if (is_array($mapping)) {
       return $mapping;
     }
